@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:todolist/TodoList.dart';
-import 'package:todolist/TodoModel.dart';
-import 'package:todolist/TodoRegistrationScreen.dart';
+import 'package:todolist/View/TodoList.dart';
+import 'package:todolist/model/TodoModel.dart';
+import 'package:todolist/view/TodoRegistrationScreen.dart';
 
 void main() {
   runApp(MyApp());

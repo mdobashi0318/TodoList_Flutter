@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:todolist/TodoModel.dart';
+import 'package:todolist/model/TodoModel.dart';
+
 
 class TodoRegistrationScreen extends StatefulWidget {
   TodoRegistrationScreen({Key key}) : super(key: key);

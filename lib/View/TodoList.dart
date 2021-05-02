@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:todolist/TodoModel.dart';
+import 'package:todolist/model/TodoModel.dart';
+import 'package:todolist/view/TodoDetailsScreen.dart';
 
-import 'TodoDetailsScreen.dart';
+
+
 
 class TodoList extends StatefulWidget {
   TodoList({Key key, this.todoModel}) : super(key: key);
