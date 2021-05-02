@@ -45,9 +45,12 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          TodoModel(title: _title, date: _date, detail: _detail, createTime: "")
-              .insertTodo();
-          Navigator.of(context).pop();
+          if (_title.isEmpty || _date.isEmpty || _detail.isEmpty) {
+            _showAlert(context);
+          } else {
+            TodoModel(title: _title, date: _date, detail: _detail).insertTodo();
+            Navigator.of(context).pop();
+          }
         },
       ),
     );
@@ -63,5 +66,24 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
 
   void _changeDetail(String text) {
     _detail = text;
+  }
+
+  void _showAlert(BuildContext contex) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: Text("入力されていない項目があります"),
+          children: <Widget>[
+            SimpleDialogOption(
+              child: Text("閉じる"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      },
+    );
   }
 }

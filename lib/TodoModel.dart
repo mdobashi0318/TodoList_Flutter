@@ -1,6 +1,7 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
+import 'package:todolist/Format.dart';
 
 class TodoModel {
   String title;
@@ -22,7 +23,7 @@ class TodoModel {
 
   Map<String, dynamic> toMap() {
     return {
-      "createTime": createTime,
+      "createTime": Format().createTime,
       "title": title,
       "date": date,
       "detail": detail,
