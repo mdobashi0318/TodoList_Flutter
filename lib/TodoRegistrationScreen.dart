@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todolist/TodoModel.dart';
 
 class TodoRegistrationScreen extends StatefulWidget {
   TodoRegistrationScreen({Key key}) : super(key: key);
@@ -44,10 +45,9 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          print("タイトル: $_title");
-          print("期限: $_date");
-          print("詳細: $_detail");
-          // Navigator.of(context).pop();
+          TodoModel(title: _title, date: _date, detail: _detail, createTime: "")
+              .insertTodo();
+          Navigator.of(context).pop();
         },
       ),
     );

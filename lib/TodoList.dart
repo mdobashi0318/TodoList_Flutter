@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:todolist/TodoModel.dart';
 
 import 'TodoDetailsScreen.dart';
-import 'TodoRegistrationScreen.dart';
 
 class TodoList extends StatefulWidget {
   TodoList({Key key, this.todoModel}) : super(key: key);
@@ -65,12 +65,4 @@ Widget _todoRow(
       didTap();
     },
   );
-}
-
-class TodoModel {
-  final String title;
-  final String date;
-  final String detail;
-
-  TodoModel(this.title, this.date, this.detail);
 }

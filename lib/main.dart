@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/TodoList.dart';
+import 'package:todolist/TodoModel.dart';
 import 'package:todolist/TodoRegistrationScreen.dart';
 
 void main() {
@@ -34,21 +35,27 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text("TodoList"),
       ),
-      body: TodoList(
-        todoModel: [
-          TodoModel("title1", "date1", "detail1"),
-          TodoModel("title2", "date2", "detail2"),
-          TodoModel("title3", "date3", "detail3"),
-        ],
-      ),
+      body: FutureBuilder(
+          future: TodoModel().getTodos(),
+          builder:
+              (BuildContext context, AsyncSnapshot<List<TodoModel>> snapshot) {
+            if (snapshot.data.length > 0) {
+              return TodoList(
+                todoModel: snapshot.data,
+              );
+            } else {
+              return Text("Todoがありません");
+            }
+          }),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => TodoRegistrationScreen(),
-                  fullscreenDialog: true));
+            context,
+            MaterialPageRoute(
+                builder: (context) => TodoRegistrationScreen(),
+                fullscreenDialog: true),
+          );
         },
       ),
     );
