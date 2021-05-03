@@ -55,7 +55,9 @@ class _MyHomePageState extends State<MyHomePage> {
             MaterialPageRoute(
                 builder: (context) => TodoRegistrationScreen(),
                 fullscreenDialog: true),
-          );
+          ).then((value) {
+            setState(() {});
+          });
         },
       ),
     );
