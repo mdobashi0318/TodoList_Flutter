@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/model/TodoModel.dart';
-import 'package:todolist/view/TodoDetailsScreen.dart';
+import 'package:todolist/view/TodoRow.dart';
 
 class TodoList extends StatefulWidget {
   TodoList({Key key, this.todoModel}) : super(key: key);
@@ -19,49 +19,11 @@ class _TodoList extends State<TodoList> {
       itemCount: widget.todoModel.length,
       itemBuilder: (context, index) {
         return Card(
-          child: _todoRow(
-            widget.todoModel[index].title,
-            widget.todoModel[index].date,
-            push,
+          child: TodoRow(
+            todoModel: widget.todoModel[index],
           ),
         );
       },
     );
   }
-
-  //
-  void push() {
-    setState(() {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TodoDetailsScreen(),
-          ));
-    });
-  }
-}
-
-Widget _todoRow(
-  String title,
-  String date,
-  didTap,
-) {
-  return ListTile(
-    title: Container(
-      padding: EdgeInsets.all(8),
-      child: Row(
-        children: [
-          Column(
-            children: [
-              Text(title),
-              Text(date),
-            ],
-          ),
-        ],
-      ),
-    ),
-    onTap: () {
-      didTap();
-    },
-  );
 }
