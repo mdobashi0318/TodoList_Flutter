@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/model/TodoModel.dart';
+import 'package:todolist/view/TodoRegistrationScreen.dart';
 
 class TodoDetailsScreen extends StatefulWidget {
   final TodoModel todoModel;
@@ -16,6 +17,13 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("詳細"),
+        actions: [
+          IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () {
+                didTapEditButton();
+              }),
+        ],
       ),
       body: Container(
         padding: EdgeInsets.all(10),
@@ -30,10 +38,29 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
     );
   }
 
+  void didTapEditButton() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TodoRegistrationScreen(todoModel: widget.todoModel,mode: Mode.Edit),
+      ),
+    ).then((value) {
+      setState(() {
+        print("戻った");
+      });
+    });
+  }
+
   Widget _valueRow(String title, String value) {
     return ListTile(
-      title: Text(title, style: TextStyle(fontSize: 13),),
-      subtitle: Text(value, style: TextStyle(fontSize: 18),),
+      title: Text(
+        title,
+        style: TextStyle(fontSize: 13),
+      ),
+      subtitle: Text(
+        value,
+        style: TextStyle(fontSize: 18),
+      ),
     );
   }
 }

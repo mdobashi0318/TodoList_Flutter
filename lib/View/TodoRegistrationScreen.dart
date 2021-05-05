@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/model/TodoModel.dart';
 
+enum Mode { Add, Edit }
 
 class TodoRegistrationScreen extends StatefulWidget {
-  TodoRegistrationScreen({Key key}) : super(key: key);
+  final TodoModel todoModel;
+  final Mode mode;
+
+  TodoRegistrationScreen({Key key, this.todoModel, this.mode})
+      : super(key: key);
 
   @override
   _TodoRegistrationScreen createState() => _TodoRegistrationScreen();
@@ -16,6 +21,12 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.mode == Mode.Edit) {
+      _title = widget.todoModel.title;
+      _date = widget.todoModel.date;
+      _detail = widget.todoModel.detail;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text("作成画面"),
@@ -26,16 +37,19 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
         child: Column(
           children: [
             TextField(
+              controller: TextEditingController(text: _title),
               obscureText: false,
               decoration: InputDecoration(labelText: "タイトル"),
               onChanged: _changeTitle,
             ),
             TextField(
+              controller: TextEditingController(text: _date),
               obscureText: false,
               decoration: InputDecoration(labelText: "期限"),
               onChanged: _changeDate,
             ),
             TextField(
+              controller: TextEditingController(text: _detail),
               obscureText: false,
               decoration: InputDecoration(labelText: "詳細"),
               onChanged: _changeDetail,
@@ -49,7 +63,15 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
           if (_title.isEmpty || _date.isEmpty || _detail.isEmpty) {
             _showAlert(context);
           } else {
-            TodoModel(title: _title, date: _date, detail: _detail).insertTodo();
+            switch (widget.mode) {
+              case Mode.Add:
+                TodoModel(title: _title, date: _date, detail: _detail)
+                    .insertTodo();
+                break;
+              case Mode.Edit:
+                print("編集");
+                break;
+            }
             Navigator.of(context).pop();
           }
         },

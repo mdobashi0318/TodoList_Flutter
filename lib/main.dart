@@ -53,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => TodoRegistrationScreen(),
+                builder: (context) => TodoRegistrationScreen(mode: Mode.Add),
                 fullscreenDialog: true),
           ).then((value) {
             setState(() {});
