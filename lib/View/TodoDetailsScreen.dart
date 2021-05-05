@@ -18,6 +18,7 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
         title: Text("詳細"),
       ),
       body: Container(
+        padding: EdgeInsets.all(10),
         child: Column(
           children: [
             _valueRow("タイトル", widget.todoModel.title),
@@ -29,11 +30,10 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
     );
   }
 
-  Widget _valueRow(String title, String value) => Row(
-        children: [
-          Column(
-            children: [Text(title), Text(value)],
-          ),
-        ],
-      );
+  Widget _valueRow(String title, String value) {
+    return ListTile(
+      title: Text(title, style: TextStyle(fontSize: 13),),
+      subtitle: Text(value, style: TextStyle(fontSize: 18),),
+    );
+  }
 }

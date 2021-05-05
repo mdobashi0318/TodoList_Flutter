@@ -14,18 +14,13 @@ class TodoRow extends StatelessWidget {
 
   Widget _todoRow(TodoModel model, BuildContext context) {
     return ListTile(
-      title: Container(
-        padding: EdgeInsets.all(8),
-        child: Row(
-          children: [
-            Column(
-              children: [
-                Text(model.title),
-                Text(model.date),
-              ],
-            ),
-          ],
-        ),
+      title: Text(
+        model.title,
+        style: TextStyle(fontSize: 18),
+      ),
+      subtitle: Text(
+        model.detail,
+        style: TextStyle(fontSize: 18),
       ),
       onTap: () {
         didTapTodoRow(todoModel, context);
