@@ -19,6 +19,7 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
   String _date = "";
   String _detail = "";
 
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     if (widget.mode == Mode.Edit) {
@@ -34,27 +35,46 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
       body: Container(
         padding: EdgeInsets.all(10),
         alignment: Alignment.centerLeft,
-        child: Column(
-          children: [
-            TextField(
-              controller: TextEditingController(text: _title),
-              obscureText: false,
-              decoration: InputDecoration(labelText: "タイトル"),
-              onChanged: _changeTitle,
-            ),
-            TextField(
-              controller: TextEditingController(text: _date),
-              obscureText: false,
-              decoration: InputDecoration(labelText: "期限"),
-              onChanged: _changeDate,
-            ),
-            TextField(
-              controller: TextEditingController(text: _detail),
-              obscureText: false,
-              decoration: InputDecoration(labelText: "詳細"),
-              onChanged: _changeDetail,
-            ),
-          ],
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: TextEditingController(text: _title),
+                obscureText: false,
+                decoration: InputDecoration(labelText: "タイトル"),
+                onChanged: _changeTitle,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'タイトルが入力されていません';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                  controller: TextEditingController(text: _date),
+                  obscureText: false,
+                  decoration: InputDecoration(labelText: "期限"),
+                  onChanged: _changeDate,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '期限が入力されていません';
+                    }
+                    return null;
+                  }),
+              TextFormField(
+                  controller: TextEditingController(text: _detail),
+                  obscureText: false,
+                  decoration: InputDecoration(labelText: "詳細"),
+                  onChanged: _changeDetail,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '詳細が入力されていません';
+                    }
+                    return null;
+                  }),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -62,6 +82,7 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
         onPressed: () {
           if (_title.isEmpty || _date.isEmpty || _detail.isEmpty) {
             _showAlert(context);
+            _formKey.currentState.validate();
           } else {
             switch (widget.mode) {
               case Mode.Add:
