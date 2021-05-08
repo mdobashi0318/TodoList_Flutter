@@ -17,13 +17,7 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("詳細"),
-        actions: [
-          IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () {
-                didTapEditButton();
-              }),
-        ],
+        actions: [_popupMenu()],
       ),
       body: Container(
         padding: EdgeInsets.all(10),
@@ -42,7 +36,8 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TodoRegistrationScreen(todoModel: widget.todoModel,mode: Mode.Edit),
+        builder: (context) => TodoRegistrationScreen(
+            todoModel: widget.todoModel, mode: Mode.Edit),
       ),
     ).then((value) {
       setState(() {
@@ -61,6 +56,24 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
         value,
         style: TextStyle(fontSize: 18),
       ),
+    );
+  }
+
+  Widget _popupMenu() {
+    return PopupMenuButton(
+      onSelected: (value) {
+        if (value == "1") {
+          didTapEditButton();
+        } else if (value == "2") {
+          print("Todoを削除");
+        }
+      },
+      itemBuilder: (BuildContext context) {
+        return <PopupMenuEntry<String>>[
+          PopupMenuItem(value: "1", child: Text("編集")),
+          PopupMenuItem(value: "2", child: Text("削除"))
+        ];
+      },
     );
   }
 }
