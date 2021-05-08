@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/model/TodoModel.dart';
 
-enum Mode { Add, Edit }
+enum Mode { Add, Edit, Delete }
 
 class TodoRegistrationScreen extends StatefulWidget {
   final TodoModel todoModel;

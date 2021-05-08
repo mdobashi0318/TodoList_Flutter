@@ -61,17 +61,19 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
 
   Widget _popupMenu() {
     return PopupMenuButton(
-      onSelected: (value) {
-        if (value == "1") {
-          didTapEditButton();
-        } else if (value == "2") {
-          print("Todoを削除");
+      onSelected: (mode) {
+        switch (mode) {
+          case Mode.Edit:
+            didTapEditButton();
+            break;
+          case Mode.Delete:
+            print("Todoを削除");
         }
       },
       itemBuilder: (BuildContext context) {
-        return <PopupMenuEntry<String>>[
-          PopupMenuItem(value: "1", child: Text("編集")),
-          PopupMenuItem(value: "2", child: Text("削除"))
+        return <PopupMenuEntry<Mode>>[
+          PopupMenuItem(value: Mode.Edit, child: Text("編集")),
+          PopupMenuItem(value: Mode.Delete, child: Text("削除"))
         ];
       },
     );
