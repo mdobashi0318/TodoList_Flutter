@@ -35,18 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text("TodoList"),
       ),
-      body: FutureBuilder(
-          future: TodoModel().getTodos(),
-          builder:
-              (BuildContext context, AsyncSnapshot<List<TodoModel>> snapshot) {
-            if (snapshot.data.length > 0) {
-              return TodoList(
-                todoModel: snapshot.data,
-              );
-            } else {
-              return Text("Todoがありません");
-            }
-          }),
+      body: TodoList(),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
