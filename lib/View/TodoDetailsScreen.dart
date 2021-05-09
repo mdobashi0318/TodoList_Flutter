@@ -23,7 +23,7 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
         actions: [_popupMenu()],
       ),
       body: FutureBuilder(
-          future: TodoModel().findTodo(todoModel.createTime),
+          future: todoModel.findTodo(),
           builder: (BuildContext context, AsyncSnapshot<TodoModel> snapshot) {
             todoModel = snapshot.data;
             return Container(
