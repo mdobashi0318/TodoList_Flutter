@@ -12,23 +12,31 @@ class TodoDetailsScreen extends StatefulWidget {
 }
 
 class _TodoDetailsScreen extends State<TodoDetailsScreen> {
+  TodoModel todoModel;
+
   @override
   Widget build(BuildContext context) {
+    todoModel = widget.todoModel;
     return Scaffold(
       appBar: AppBar(
         title: Text("詳細"),
         actions: [_popupMenu()],
       ),
-      body: Container(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          children: [
-            _valueRow("タイトル", widget.todoModel.title),
-            _valueRow("期限", widget.todoModel.date),
-            _valueRow("詳細", widget.todoModel.detail),
-          ],
-        ),
-      ),
+      body: FutureBuilder(
+          future: TodoModel().findTodo(todoModel.createTime),
+          builder: (BuildContext context, AsyncSnapshot<TodoModel> snapshot) {
+            todoModel = snapshot.data;
+            return Container(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  _valueRow("タイトル", snapshot.data.title),
+                  _valueRow("期限", snapshot.data.date),
+                  _valueRow("詳細", snapshot.data.detail),
+                ],
+              ),
+            );
+          }),
     );
   }
 
@@ -40,9 +48,7 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
             todoModel: widget.todoModel, mode: Mode.Edit),
       ),
     ).then((value) {
-      setState(() {
-        print("戻った");
-      });
+      setState(() {});
     });
   }
 

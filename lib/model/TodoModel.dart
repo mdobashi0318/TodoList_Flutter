@@ -22,8 +22,9 @@ class TodoModel {
   );
 
   Map<String, dynamic> toMap() {
+    final _createTime = createTime == null ? Format().createTime : createTime;
     return {
-      "createTime": Format().createTime,
+      "createTime": _createTime,
       "title": title,
       "date": date,
       "detail": detail,
@@ -39,6 +40,17 @@ class TodoModel {
     );
   }
 
+  Future<void> updateTodo() async {
+    final Database db = await database;
+    await db.update(
+      'todo',
+      this.toMap(),
+      where: "createTime = ?",
+      whereArgs: [createTime],
+      conflictAlgorithm: ConflictAlgorithm.fail,
+    );
+  }
+
   Future<List<TodoModel>> getTodos() async {
     final Database db = await database;
     final List<Map<String, dynamic>> maps = await db.query('todo');
@@ -50,5 +62,22 @@ class TodoModel {
         createTime: maps[i]['createTime'],
       );
     });
+  }
+
+  Future<TodoModel> findTodo(String createTime) async {
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'todo',
+      where: "createTime = ?",
+      whereArgs: [createTime],
+    );
+    return List.generate(maps.length, (i) {
+      return TodoModel(
+        title: maps[i]['title'],
+        date: maps[i]['date'],
+        detail: maps[i]['detail'],
+        createTime: maps[i]['createTime'],
+      );
+    }).first;
   }
 }

@@ -91,6 +91,12 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
                 break;
               case Mode.Edit:
                 print("編集");
+                TodoModel(
+                        title: _title,
+                        date: _date,
+                        detail: _detail,
+                        createTime: widget.todoModel.createTime)
+                    .updateTodo();
                 break;
             }
             Navigator.of(context).pop();
