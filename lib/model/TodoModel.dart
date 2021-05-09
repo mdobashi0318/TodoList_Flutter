@@ -80,4 +80,13 @@ class TodoModel {
       );
     }).first;
   }
+
+  Future<void> deleteTodo() async {
+    final Database db = await database;
+    db.delete(
+      "todo",
+      where: "createTime = ?",
+      whereArgs: [createTime],
+    );
+  }
 }

@@ -74,6 +74,8 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
             break;
           case Mode.Delete:
             print("Todoを削除");
+            widget.todoModel.deleteTodo();
+            Navigator.of(context).pop();
         }
       },
       itemBuilder: (BuildContext context) {
