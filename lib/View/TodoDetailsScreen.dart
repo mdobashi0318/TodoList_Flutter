@@ -19,15 +19,17 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
     todoModel = widget.todoModel;
     return Scaffold(
       appBar: AppBar(
-        title: Text("詳細"),
-        actions: [_popupMenu()],
+        title: const Text("詳細"),
+        actions: [
+          _popupMenu(),
+        ],
       ),
       body: FutureBuilder(
           future: todoModel.findTodo(),
           builder: (BuildContext context, AsyncSnapshot<TodoModel> snapshot) {
             todoModel = snapshot.data;
             return Container(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Column(
                 children: [
                   _valueRow("タイトル", snapshot.data.title),
@@ -73,7 +75,6 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
             didTapEditButton();
             break;
           case Mode.Delete:
-            print("Todoを削除");
             widget.todoModel.deleteTodo();
             Navigator.of(context).pop();
         }

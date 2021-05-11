@@ -17,12 +17,12 @@ class _TodoList extends State<TodoList> {
         builder:
             (BuildContext context, AsyncSnapshot<List<TodoModel>> snapshot) {
               if(snapshot.connectionState == ConnectionState.waiting) {
-                return SizedBox();
+                return const SizedBox();
               }
               
           if (snapshot.data.length > 0) {
             return ListView.builder(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 itemCount: snapshot.data.length,
                 itemBuilder: (context, index) {
                   return TodoRow(
@@ -35,7 +35,7 @@ class _TodoList extends State<TodoList> {
                   );
                 });
           } else {
-            return Text("Todoがありません");
+            return const Text("Todoがありません");
           }
         });
   }

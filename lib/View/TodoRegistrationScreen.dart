@@ -36,10 +36,10 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("作成画面"),
+        title: const Text("作成画面"),
       ),
       body: Container(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         alignment: Alignment.centerLeft,
         child: Form(
           key: _formKey,
@@ -64,7 +64,7 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
                       onPressed: () {
                         _selectDate();
                       },
-                      child: Text("期日"),
+                      child: const Text("期日"),
                     ),
                     SizedBox(
                       width: 50,
@@ -161,7 +161,6 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
       setState(() {
         date = picker;
         _date = Format().setFormatString(date);
-        print("_date: $_date");
       });
     }
   }
