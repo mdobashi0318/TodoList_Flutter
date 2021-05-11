@@ -16,6 +16,10 @@ class _TodoList extends State<TodoList> {
         future: TodoModel().getTodos(),
         builder:
             (BuildContext context, AsyncSnapshot<List<TodoModel>> snapshot) {
+              if(snapshot.connectionState == ConnectionState.waiting) {
+                return SizedBox();
+              }
+              
           if (snapshot.data.length > 0) {
             return ListView.builder(
                 padding: EdgeInsets.all(10),
