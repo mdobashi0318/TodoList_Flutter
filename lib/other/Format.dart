@@ -8,4 +8,9 @@ class Format {
     DateFormat outputFormat = DateFormat('yyyy/MM/dd HH:MM:SS.ssss');
     return outputFormat.format(now);
   }
+
+  String setFormatString(DateTime date) {
+    DateFormat outputFormat = DateFormat('yyyy/MM/dd');
+    return outputFormat.format(date);
+  }
 }

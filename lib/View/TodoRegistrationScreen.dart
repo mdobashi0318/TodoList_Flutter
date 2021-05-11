@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/model/TodoModel.dart';
+import 'package:todolist/other/Format.dart';
 
 enum Mode { Add, Edit, Delete }
 
@@ -20,14 +21,19 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
   String _detail = "";
 
   final _formKey = GlobalKey<FormState>();
+
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     if (widget.mode == Mode.Edit) {
       _title = widget.todoModel.title;
       _date = widget.todoModel.date;
       _detail = widget.todoModel.detail;
     }
+    super.initState();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("作成画面"),
@@ -51,17 +57,22 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
                   return null;
                 },
               ),
-              TextFormField(
-                  controller: TextEditingController(text: _date),
-                  obscureText: false,
-                  decoration: InputDecoration(labelText: "期限"),
-                  onChanged: _changeDate,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '期限が入力されていません';
-                    }
-                    return null;
-                  }),
+              Container(
+                child: Row(
+                  children: [
+                    OutlinedButton(
+                      onPressed: () {
+                        _selectDate();
+                      },
+                      child: Text("期日"),
+                    ),
+                    SizedBox(
+                      width: 50,
+                    ),
+                    Text(_date),
+                  ],
+                ),
+              ),
               TextFormField(
                   controller: TextEditingController(text: _detail),
                   obscureText: false,
@@ -136,5 +147,22 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
         );
       },
     );
+  }
+
+  Future<void> _selectDate() async {
+    DateTime date = new DateTime.now();
+    final DateTime picker = await showDatePicker(
+        context: context,
+        initialDate: date,
+        firstDate: DateTime.now(),
+        lastDate: new DateTime.now().add(new Duration(days: 360)),
+        currentDate: date);
+    if (picker != null) {
+      setState(() {
+        date = picker;
+        _date = Format().setFormatString(date);
+        print("_date: $_date");
+      });
+    }
   }
 }

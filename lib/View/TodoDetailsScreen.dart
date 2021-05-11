@@ -31,7 +31,7 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
               child: Column(
                 children: [
                   _valueRow("タイトル", snapshot.data.title),
-                  _valueRow("期限", snapshot.data.date),
+                  _valueRow("期日", snapshot.data.date),
                   _valueRow("詳細", snapshot.data.detail),
                 ],
               ),
