@@ -33,11 +33,17 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("TodoList"),
+        title: const Text("TodoList"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () => _showAlert(context),
+          ),
+        ],
       ),
       body: TodoList(),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () {
           Navigator.push(
             context,
@@ -49,6 +55,31 @@ class _MyHomePageState extends State<MyHomePage> {
           });
         },
       ),
+    );
+  }
+
+  void _showAlert(BuildContext contex) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Todoを全件削除しますか？"),
+          actions: <Widget>[
+            SimpleDialogOption(
+              child: Text("削除"),
+              onPressed: () {
+                TodoModel().deleteALL().then((value) => setState(() {
+                      Navigator.pop(context);
+                    }));
+              },
+            ),
+            SimpleDialogOption(
+              child: Text("キャンセル"),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        );
+      },
     );
   }
 }

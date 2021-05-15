@@ -89,4 +89,9 @@ class TodoModel {
       whereArgs: [createTime],
     );
   }
+
+  Future<void> deleteALL() async {
+    final Database db = await database;
+    db.delete("todo");
+  }
 }
