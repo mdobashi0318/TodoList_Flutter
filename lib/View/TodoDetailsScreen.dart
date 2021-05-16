@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todolist/model/TodoModel.dart';
 import 'package:todolist/view/TodoRegistrationScreen.dart';
 
@@ -15,8 +16,13 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
   TodoModel todoModel;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     todoModel = widget.todoModel;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("詳細"),
@@ -27,17 +33,43 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
       body: FutureBuilder(
           future: todoModel.findTodo(),
           builder: (BuildContext context, AsyncSnapshot<TodoModel> snapshot) {
-            todoModel = snapshot.data;
-            return Container(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                children: [
-                  _valueRow("タイトル", snapshot.data.title),
-                  _valueRow("期日", snapshot.data.date),
-                  _valueRow("詳細", snapshot.data.detail),
-                ],
-              ),
-            );
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return Container();
+              case ConnectionState.done:
+                todoModel = snapshot.data;
+                return Container(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      Provider<String>.value(
+                        value: snapshot.data.title,
+                        child:
+                            Consumer(builder: (context, String value, child) {
+                          return _valueRow("タイトル", value);
+                        }),
+                      ),
+                      Provider<String>.value(
+                        value: snapshot.data.date,
+                        child:
+                            Consumer(builder: (context, String value, child) {
+                          return _valueRow("期日", value);
+                        }),
+                      ),
+                      Provider<String>.value(
+                        value: snapshot.data.detail,
+                        child:
+                            Consumer(builder: (context, String value, child) {
+                          return _valueRow("詳細", value);
+                        }),
+                      ),
+                    ],
+                  ),
+                );
+              case ConnectionState.none:
+              case ConnectionState.active:
+            }
+            return Container();
           }),
     );
   }
@@ -46,8 +78,8 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TodoRegistrationScreen(
-            todoModel: widget.todoModel, mode: Mode.Edit),
+        builder: (context) =>
+            TodoRegistrationScreen(todoModel: todoModel, mode: Mode.Edit),
       ),
     ).then((value) {
       setState(() {});
@@ -75,7 +107,7 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
             didTapEditButton();
             break;
           case Mode.Delete:
-            widget.todoModel.deleteTodo();
+            todoModel.deleteTodo();
             Navigator.of(context).pop();
         }
       },
