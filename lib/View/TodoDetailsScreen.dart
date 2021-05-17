@@ -34,8 +34,6 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
           future: todoModel.findTodo(),
           builder: (BuildContext context, AsyncSnapshot<TodoModel> snapshot) {
             switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                return Container();
               case ConnectionState.done:
                 todoModel = snapshot.data;
                 return Container(
@@ -66,6 +64,7 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
                     ],
                   ),
                 );
+              case ConnectionState.waiting:
               case ConnectionState.none:
               case ConnectionState.active:
             }

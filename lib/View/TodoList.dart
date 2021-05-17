@@ -16,27 +16,28 @@ class _TodoList extends State<TodoList> {
         future: TodoModel().getTodos(),
         builder:
             (BuildContext context, AsyncSnapshot<List<TodoModel>> snapshot) {
-              if(snapshot.connectionState == ConnectionState.waiting) {
-                return const SizedBox();
-              }
-              
-          if (snapshot.data.length > 0) {
-            return ListView.builder(
-                padding: const EdgeInsets.all(10),
-                itemCount: snapshot.data.length,
-                itemBuilder: (context, index) {
-                  return TodoRow(
-                    todoModel: snapshot.data[index],
-                    onTap: () {
-                      didTapTodoRow(
-                        snapshot.data[index],
-                      );
-                    },
-                  );
-                });
-          } else {
-            return const Text("Todoがありません");
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.data.length > 0) {
+              return ListView.builder(
+                  padding: const EdgeInsets.all(10),
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, index) {
+                    return TodoRow(
+                      todoModel: snapshot.data[index],
+                      onTap: () {
+                        didTapTodoRow(
+                          snapshot.data[index],
+                        );
+                      },
+                    );
+                  });
+            } else {
+              return const Center(
+                child: const Text("Todoがありません"),
+              );
+            }
           }
+          return Container();
         });
   }
 
