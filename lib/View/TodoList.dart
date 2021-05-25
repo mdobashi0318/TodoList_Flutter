@@ -13,7 +13,7 @@ class _TodoList extends State<TodoList> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: TodoModel().getTodos(),
+        future: TodoModel().findAllTodo(),
         builder:
             (BuildContext context, AsyncSnapshot<List<TodoModel>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {

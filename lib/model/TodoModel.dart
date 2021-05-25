@@ -4,9 +4,16 @@ import 'package:sqflite/sqlite_api.dart';
 import 'package:todolist/Other/Format.dart';
 
 class TodoModel {
+  /// タイトル
   String title;
+
+  /// 期日
   String date;
+
+  /// 詳細
   String detail;
+
+  /// 作成時間(プライマリキー)
   String createTime;
 
   TodoModel({this.title, this.date, this.detail, this.createTime});
@@ -31,7 +38,8 @@ class TodoModel {
     };
   }
 
-  Future<void> insertTodo() async {
+  /// Todoの作成
+  Future<void> addTodo() async {
     final Database db = await database;
     await db.insert(
       'todo',
@@ -40,6 +48,7 @@ class TodoModel {
     );
   }
 
+  /// Todoの更新
   Future<void> updateTodo() async {
     final Database db = await database;
     await db.update(
@@ -51,7 +60,8 @@ class TodoModel {
     );
   }
 
-  Future<List<TodoModel>> getTodos() async {
+  /// Todoの全件検索
+  Future<List<TodoModel>> findAllTodo() async {
     final Database db = await database;
     final List<Map<String, dynamic>> maps = await db.query('todo');
     return List.generate(maps.length, (i) {
@@ -64,6 +74,7 @@ class TodoModel {
     });
   }
 
+  /// Todoの取得
   Future<TodoModel> findTodo() async {
     final Database db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
@@ -81,6 +92,7 @@ class TodoModel {
     }).first;
   }
 
+  /// Todoを一件削除
   Future<void> deleteTodo() async {
     final Database db = await database;
     db.delete(
@@ -90,6 +102,7 @@ class TodoModel {
     );
   }
 
+  /// Todoの全件削除
   Future<void> deleteALL() async {
     final Database db = await database;
     db.delete("todo");
