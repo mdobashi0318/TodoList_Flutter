@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/model/TodoModel.dart';
 import 'package:todolist/other/Format.dart';
-
-enum Mode { Add, Edit, Delete }
+import 'package:todolist/other/Mode.dart';
 
 class TodoRegistrationScreen extends StatefulWidget {
   final TodoModel todoModel;
   final Mode mode;
 
-  TodoRegistrationScreen({Key key, this.todoModel, this.mode})
+  TodoRegistrationScreen({Key key, this.todoModel, @required this.mode})
       : super(key: key);
 
   @override
@@ -37,6 +36,9 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("作成画面"),
+        actions: [
+          _addTodoButton(),
+        ],
       ),
       body: Container(
         padding: const EdgeInsets.all(10),
@@ -88,8 +90,20 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+    );
+  }
+
+  void _changeTitle(String text) {
+    _title = text;
+  }
+
+  void _changeDetail(String text) {
+    _detail = text;
+  }
+
+  /// Todoの追加または、更新するボタン
+  IconButton _addTodoButton() => IconButton(
+        icon: Icon(Icons.add),
         onPressed: () {
           if (_title.isEmpty || _date.isEmpty || _detail.isEmpty) {
             _showAlert(context);
@@ -114,22 +128,9 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
             Navigator.of(context).pop();
           }
         },
-      ),
-    );
-  }
+      );
 
-  void _changeTitle(String text) {
-    _title = text;
-  }
-
-  void _changeDate(String text) {
-    _date = text;
-  }
-
-  void _changeDetail(String text) {
-    _detail = text;
-  }
-
+  /// 未入力があったときににダイアログを表示させる
   void _showAlert(BuildContext contex) {
     showDialog(
       context: context,
@@ -149,6 +150,7 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
     );
   }
 
+  /// 日付を設定するためのPicker
   Future<void> _selectDate() async {
     DateTime date = new DateTime.now();
     final DateTime picker = await showDatePicker(
