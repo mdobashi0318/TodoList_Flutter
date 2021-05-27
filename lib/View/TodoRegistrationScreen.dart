@@ -112,8 +112,10 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
             switch (widget.mode) {
               case Mode.Add:
                 TodoModel(title: _title, date: _date, detail: _detail)
-                    .addTodo();
-                break;
+                    .addTodo()
+                    .then((_) => Navigator.of(context).pop("0"));
+
+                return;
               case Mode.Edit:
                 TodoModel(
                         title: _title,

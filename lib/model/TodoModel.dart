@@ -1,7 +1,26 @@
+import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:todolist/Other/Format.dart';
+
+class TodoListViewModel extends ChangeNotifier {
+  List<TodoModel> model = [];
+
+  TodoListViewModel() {
+    allFetch();
+  }
+
+  Future<void> allFetch() async {
+    await TodoModel().findAllTodo().then((value) => model = value);
+    notifyListeners();
+  }
+
+  void allDelete() {
+    model = [];
+    notifyListeners();
+  }
+}
 
 class TodoModel {
   /// タイトル

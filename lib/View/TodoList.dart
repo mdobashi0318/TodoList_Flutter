@@ -3,50 +3,34 @@ import 'package:todolist/model/TodoModel.dart';
 import 'package:todolist/view/TodoDetailsScreen.dart';
 import 'package:todolist/view/TodoRow.dart';
 
-class TodoList extends StatefulWidget {
-  TodoList({Key key}) : super(key: key);
-  @override
-  _TodoList createState() => _TodoList();
-}
+class TodoList extends StatelessWidget {
+  TodoList({Key key, this.viewModel}) : super(key: key);
 
-class _TodoList extends State<TodoList> {
+  final TodoListViewModel viewModel;
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: TodoModel().findAllTodo(),
-        builder:
-            (BuildContext context, AsyncSnapshot<List<TodoModel>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.data.length > 0) {
-              return ListView.builder(
-                  padding: const EdgeInsets.all(10),
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (context, index) {
-                    return TodoRow(
-                      todoModel: snapshot.data[index],
-                      onTap: () {
-                        didTapTodoRow(
-                          snapshot.data[index],
-                        );
-                      },
-                    );
-                  });
-            } else {
-              return const Center(
-                child: const Text("Todoがありません"),
-              );
-            }
-          }
-          return Container();
-        });
+    return ListView.builder(
+      itemCount: viewModel.model.length,
+      itemBuilder: (BuildContext context, int index) {
+        return TodoRow(
+          todoModel: viewModel.model[index],
+          onTap: () {
+            didTapTodoRow(
+              context,
+              viewModel.model[index],
+            );
+          },
+        );
+      },
+    );
   }
 
-  void didTapTodoRow(TodoModel model) {
+  void didTapTodoRow(BuildContext context, TodoModel model) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => TodoDetailsScreen(todoModel: model),
       ),
-    ).then((value) => setState(() {}));
+    ).then((value) => viewModel.allFetch());
   }
 }

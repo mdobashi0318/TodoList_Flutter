@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todolist/other/Mode.dart';
 import 'package:todolist/view/TodoList.dart';
 import 'package:todolist/model/TodoModel.dart';
@@ -30,6 +31,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  TodoListViewModel viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    viewModel = TodoListViewModel();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +51,21 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: TodoList(),
+      body: ChangeNotifierProvider<TodoListViewModel>(
+        create: (context) => viewModel,
+        child: Consumer<TodoListViewModel>(
+          builder: (context, TodoListViewModel viewModel, _) {
+            if (viewModel.model.length > 0) {
+              return TodoList(
+                viewModel: viewModel,
+              );
+            }
+            return Center(
+              child: Text("Todoがありません"),
+            );
+          },
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
@@ -52,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 builder: (context) => TodoRegistrationScreen(mode: Mode.Add),
                 fullscreenDialog: true),
           ).then((value) {
-            setState(() {});
+            if (value == "0") viewModel.allFetch();
           });
         },
       ),
@@ -69,9 +92,10 @@ class _MyHomePageState extends State<MyHomePage> {
             SimpleDialogOption(
               child: Text("削除"),
               onPressed: () {
-                TodoModel().deleteALL().then((value) => setState(() {
-                      Navigator.pop(context);
-                    }));
+                TodoModel().deleteALL().then((value) {
+                  viewModel.allFetch();
+                  Navigator.pop(context);
+                });
               },
             ),
             SimpleDialogOption(
