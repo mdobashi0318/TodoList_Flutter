@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todolist/other/Mode.dart';
 import 'package:todolist/view/TodoList.dart';
-import 'package:todolist/model/TodoModel.dart';
+
 import 'package:todolist/view/TodoRegistrationScreen.dart';
+import 'package:todolist/viewModel/TodoListViewModel.dart';
 
 void main() {
   runApp(MyApp());
@@ -91,11 +92,9 @@ class _MyHomePageState extends State<MyHomePage> {
           actions: <Widget>[
             SimpleDialogOption(
               child: Text("削除"),
-              onPressed: () {
-                TodoModel().deleteALL().then((value) {
-                  viewModel.allFetch();
-                  Navigator.pop(context);
-                });
+              onPressed: () async {
+                await viewModel.allDelete().then((value) => null);
+                Navigator.pop(context);
               },
             ),
             SimpleDialogOption(
