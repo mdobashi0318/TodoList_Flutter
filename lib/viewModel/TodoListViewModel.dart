@@ -9,7 +9,12 @@ class TodoListViewModel extends ChangeNotifier {
   }
 
   Future<void> allFetch() async {
-    await TodoModel().findAllTodo().then((value) => model = value);
+    await TodoModel().findAllTodo().then((value) {
+      value.sort((a, b) {
+        return a.date.compareTo(b.date);
+      });
+      model = value;
+    });
     notifyListeners();
   }
 
