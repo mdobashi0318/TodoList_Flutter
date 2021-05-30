@@ -16,7 +16,7 @@ class TodoRow extends StatelessWidget {
           style: TextStyle(fontSize: 18),
         ),
         subtitle: Text(
-          todoModel.detail,
+          todoModel.date,
           style: TextStyle(fontSize: 18),
         ),
         onTap: onTap,
