@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todolist/model/TodoModel.dart';
@@ -107,8 +109,7 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
             didTapEditButton();
             break;
           case Mode.Delete:
-            todoModel.deleteTodo();
-            Navigator.of(context).pop();
+            _showAlert(context);
         }
       },
       itemBuilder: (BuildContext context) {
@@ -116,6 +117,33 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
           PopupMenuItem(value: Mode.Edit, child: Text("編集")),
           PopupMenuItem(value: Mode.Delete, child: Text("削除"))
         ];
+      },
+    );
+  }
+
+  Future<void> _showAlert(BuildContext contex) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Todoを削除しますか？"),
+          actions: <Widget>[
+            SimpleDialogOption(
+              child: Text("削除"),
+              onPressed: () async {
+                print("削除する");
+                await todoModel
+                    .deleteTodo()
+                    .then((value) => Navigator.of(context).pop());
+                Navigator.of(context).pop();
+              },
+            ),
+            SimpleDialogOption(
+              child: Text("キャンセル"),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
       },
     );
   }
