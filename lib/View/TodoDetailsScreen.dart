@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:todolist/model/TodoModel.dart';
 import 'package:todolist/other/Mode.dart';
 import 'package:todolist/view/TodoRegistrationScreen.dart';
+import 'package:todolist/viewModel/TodoDetailsScreenViewModel.dart';
 
 class TodoDetailsScreen extends StatefulWidget {
   final TodoModel todoModel;
@@ -16,12 +17,12 @@ class TodoDetailsScreen extends StatefulWidget {
 }
 
 class _TodoDetailsScreen extends State<TodoDetailsScreen> {
-  TodoModel todoModel;
+  TodoDetailsScreenViewModel viewModel;
 
   @override
   void initState() {
     super.initState();
-    todoModel = widget.todoModel;
+    viewModel = TodoDetailsScreenViewModel(widget.todoModel);
   }
 
   @override
@@ -33,46 +34,35 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
           _popupMenu(),
         ],
       ),
-      body: FutureBuilder(
-          future: todoModel.findTodo(),
-          builder: (BuildContext context, AsyncSnapshot<TodoModel> snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.done:
-                todoModel = snapshot.data;
-                return Container(
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      Provider<String>.value(
-                        value: snapshot.data.title,
-                        child:
-                            Consumer(builder: (context, String value, child) {
-                          return _valueRow("タイトル", value);
-                        }),
-                      ),
-                      Provider<String>.value(
-                        value: snapshot.data.date,
-                        child:
-                            Consumer(builder: (context, String value, child) {
-                          return _valueRow("期日", value);
-                        }),
-                      ),
-                      Provider<String>.value(
-                        value: snapshot.data.detail,
-                        child:
-                            Consumer(builder: (context, String value, child) {
-                          return _valueRow("詳細", value);
-                        }),
-                      ),
-                    ],
-                  ),
-                );
-              case ConnectionState.waiting:
-              case ConnectionState.none:
-              case ConnectionState.active:
+      body: Container(
+        padding: const EdgeInsets.all(10),
+        child: ChangeNotifierProvider<TodoDetailsScreenViewModel>(
+          create: (context) => viewModel,
+          builder: (BuildContext context, _) {
+            if (viewModel.msg.isNotEmpty) {
+              Future.delayed(Duration(seconds: 1), () {
+                _errorSnackBar(context, viewModel.msg);
+              });
             }
-            return Container();
-          }),
+            return Column(
+              children: [
+                Consumer(builder:
+                    (context, TodoDetailsScreenViewModel value, child) {
+                  return _valueRow("タイトル", value.model.title);
+                }),
+                Consumer(builder:
+                    (context, TodoDetailsScreenViewModel value, child) {
+                  return _valueRow("期日", value.model.date);
+                }),
+                Consumer(builder:
+                    (context, TodoDetailsScreenViewModel value, child) {
+                  return _valueRow("詳細", value.model.detail);
+                }),
+              ],
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -81,10 +71,10 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
       context,
       MaterialPageRoute(
         builder: (context) =>
-            TodoRegistrationScreen(todoModel: todoModel, mode: Mode.Edit),
+            TodoRegistrationScreen(todoModel: viewModel.model, mode: Mode.Edit),
       ),
     ).then((value) {
-      setState(() {});
+      viewModel.findTodo();
     });
   }
 
@@ -131,8 +121,7 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
             SimpleDialogOption(
               child: Text("削除"),
               onPressed: () async {
-                print("削除する");
-                await todoModel
+                await viewModel.model
                     .deleteTodo()
                     .then((value) => Navigator.of(context).pop());
                 Navigator.of(context).pop();
@@ -146,5 +135,13 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
         );
       },
     );
+  }
+
+  void _errorSnackBar(BuildContext context, String error) {
+    SnackBar snackBar = SnackBar(
+      content: Text(error),
+      duration: Duration(seconds: 3),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

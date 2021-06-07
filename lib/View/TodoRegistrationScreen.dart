@@ -113,8 +113,8 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
               case Mode.Add:
                 TodoModel(title: _title, date: _date, detail: _detail)
                     .addTodo()
-                    .then((_) => Navigator.of(context).pop("0"));
-
+                    .then((value) => Navigator.of(context).pop("0"))
+                    .catchError((error) => _errorSnackBar(error));
                 return;
               case Mode.Edit:
                 TodoModel(
@@ -122,12 +122,14 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
                         date: _date,
                         detail: _detail,
                         createTime: widget.todoModel.createTime)
-                    .updateTodo();
+                    .updateTodo()
+                    .then((value) => Navigator.of(context).pop())
+                    .catchError((error) => _errorSnackBar(error));
+
                 break;
               case Mode.Delete:
                 break;
             }
-            Navigator.of(context).pop();
           }
         },
       );
@@ -167,5 +169,13 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
         _date = Format().setFormatString(date);
       });
     }
+  }
+
+  void _errorSnackBar(String error) {
+    SnackBar snackBar = SnackBar(
+      content: Text(error),
+      duration: Duration(seconds: 3),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

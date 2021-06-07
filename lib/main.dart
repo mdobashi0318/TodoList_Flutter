@@ -56,14 +56,12 @@ class _MyHomePageState extends State<MyHomePage> {
         create: (context) => viewModel,
         child: Consumer<TodoListViewModel>(
           builder: (context, TodoListViewModel viewModel, _) {
-            if (viewModel.model.length > 0) {
+            if (viewModel.model.isNotEmpty) {
               return TodoList(
                 viewModel: viewModel,
               );
             }
-            return Center(
-              child: Text("Todoがありません"),
-            );
+            return Center(child: Text(viewModel.message));
           },
         ),
       ),
@@ -93,8 +91,10 @@ class _MyHomePageState extends State<MyHomePage> {
             SimpleDialogOption(
               child: Text("削除"),
               onPressed: () async {
-                await viewModel.allDelete().then((value) => null);
-                Navigator.pop(context);
+                await viewModel
+                    .allDelete()
+                    .catchError((error) => _errorSnackBar(error))
+                    .whenComplete(() => Navigator.pop(context));
               },
             ),
             SimpleDialogOption(
@@ -105,5 +105,13 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       },
     );
+  }
+
+  void _errorSnackBar(String error) {
+    SnackBar snackBar = SnackBar(
+      content: Text(error),
+      duration: Duration(seconds: 3),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

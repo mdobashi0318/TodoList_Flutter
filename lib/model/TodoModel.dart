@@ -4,6 +4,8 @@ import 'package:sqflite/sqlite_api.dart';
 import 'package:todolist/Other/Format.dart';
 
 class TodoModel {
+  final String _tableName = "todo";
+
   /// タイトル
   String title;
 
@@ -41,29 +43,49 @@ class TodoModel {
   /// Todoの作成
   Future<void> addTodo() async {
     final Database db = await database;
-    await db.insert(
-      'todo',
+
+    print("Todoを作成: ${this.toMap()}");
+    await db
+        .insert(
+      _tableName,
       this.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    )
+        .onError((error, stackTrace) {
+      print("stackTrace: $stackTrace");
+      print("Error: $error");
+      return throw ("Todoの追加に失敗しました");
+    });
   }
 
   /// Todoの更新
   Future<void> updateTodo() async {
     final Database db = await database;
-    await db.update(
-      'todo',
+    await db
+        .update(
+      _tableName,
       this.toMap(),
       where: "createTime = ?",
       whereArgs: [createTime],
       conflictAlgorithm: ConflictAlgorithm.fail,
-    );
+    )
+        .onError((error, stackTrace) {
+      print("stackTrace: $stackTrace");
+      print("Error: $error");
+      return throw ("Todoの更新に失敗しました");
+    });
   }
 
-  /// Todoの全件検索
+  /// Todoの全件取得
   Future<List<TodoModel>> findAllTodo() async {
     final Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('todo');
+
+    final List<Map<String, dynamic>> maps =
+        await db.query(_tableName).onError((error, stackTrace) {
+      print("stackTrace: $stackTrace");
+      print("Todoの全件取得エラー: $error");
+      return throw ("Todoの取得に失敗しました");
+    });
     return List.generate(maps.length, (i) {
       return TodoModel(
         title: maps[i]['title'],
@@ -74,14 +96,20 @@ class TodoModel {
     });
   }
 
-  /// Todoの取得
+  /// Todoの1件取得
   Future<TodoModel> findTodo() async {
     final Database db = await database;
+
     final List<Map<String, dynamic>> maps = await db.query(
-      'todo',
+      _tableName,
       where: "createTime = ?",
       whereArgs: [createTime],
-    );
+    ).onError((error, stackTrace) {
+      print("stackTrace: $stackTrace");
+      print("Todoの取得エラー: $error");
+      return throw ("Todoの取得に失敗しました");
+    });
+
     return List.generate(maps.length, (i) {
       return TodoModel(
         title: maps[i]['title'],
@@ -92,19 +120,28 @@ class TodoModel {
     }).first;
   }
 
-  /// Todoを一件削除
-  Future<void> deleteTodo() async {
-    final Database db = await database;
-    db.delete(
-      "todo",
-      where: "createTime = ?",
-      whereArgs: [createTime],
-    );
-  }
-
   /// Todoの全件削除
   Future<void> deleteALL() async {
     final Database db = await database;
-    db.delete("todo");
+    db.delete(_tableName).onError((error, stackTrace) {
+      print("stackTrace: $stackTrace");
+      print("Todoの全件削除エラー: $error");
+      return throw ("Todoの削除に失敗しました");
+    });
+  }
+
+  /// Todoを一件削除
+  Future<void> deleteTodo() async {
+    final Database db = await database;
+
+    db.delete(
+      _tableName,
+      where: "createTime = ?",
+      whereArgs: [createTime],
+    ).onError((error, stackTrace) {
+      print("stackTrace: $stackTrace");
+      print("Todoの削除エラー: $error");
+      return throw ("Todoの削除に失敗しました");
+    });
   }
 }
