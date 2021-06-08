@@ -26,13 +26,14 @@ class TodoListViewModel extends ChangeNotifier {
   }
 
   Future<void> allDelete() async {
-    await TodoModel()
-        .deleteALL()
-        .then((_) {
-          model = [];
-          message = noTodoMsg;
-        })
-        .catchError((error) => message = error.toString())
-        .whenComplete(() => notifyListeners());
+    try {
+      await TodoModel().deleteALL();
+      model = [];
+      message = noTodoMsg;
+    } catch (e) {
+      message = e.toString();
+    } finally {
+      notifyListeners();
+    }
   }
 }

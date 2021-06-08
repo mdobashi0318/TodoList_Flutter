@@ -44,104 +44,107 @@ class TodoModel {
   Future<void> addTodo() async {
     final Database db = await database;
 
-    print("Todoを作成: ${this.toMap()}");
-    await db
-        .insert(
-      _tableName,
-      this.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    )
-        .onError((error, stackTrace) {
-      print("stackTrace: $stackTrace");
-      print("Error: $error");
+    try {
+      await db.insert(
+        _tableName,
+        this.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    } catch (e, s) {
+      print("Error: $e");
+      print("stackTrace: $s");
       return throw ("Todoの追加に失敗しました");
-    });
+    }
   }
 
   /// Todoの更新
   Future<void> updateTodo() async {
-    final Database db = await database;
-    await db
-        .update(
-      _tableName,
-      this.toMap(),
-      where: "createTime = ?",
-      whereArgs: [createTime],
-      conflictAlgorithm: ConflictAlgorithm.fail,
-    )
-        .onError((error, stackTrace) {
-      print("stackTrace: $stackTrace");
-      print("Error: $error");
+    try {
+      final Database db = await database;
+      await db.update(
+        _tableName,
+        this.toMap(),
+        where: "createTime = ?",
+        whereArgs: [createTime],
+        conflictAlgorithm: ConflictAlgorithm.fail,
+      );
+    } catch (e, s) {
+      print("Error: $e");
+      print("stackTrace: $s");
       return throw ("Todoの更新に失敗しました");
-    });
+    }
   }
 
   /// Todoの全件取得
   Future<List<TodoModel>> findAllTodo() async {
     final Database db = await database;
-
-    final List<Map<String, dynamic>> maps =
-        await db.query(_tableName).onError((error, stackTrace) {
-      print("stackTrace: $stackTrace");
-      print("Todoの全件取得エラー: $error");
+    try {
+      final List<Map<String, dynamic>> maps = await db.query(_tableName);
+      return List.generate(maps.length, (i) {
+        return TodoModel(
+          title: maps[i]['title'],
+          date: maps[i]['date'],
+          detail: maps[i]['detail'],
+          createTime: maps[i]['createTime'],
+        );
+      });
+    } catch (e, s) {
+      print("error: $e");
+      print("stackTrace: $s");
       return throw ("Todoの取得に失敗しました");
-    });
-    return List.generate(maps.length, (i) {
-      return TodoModel(
-        title: maps[i]['title'],
-        date: maps[i]['date'],
-        detail: maps[i]['detail'],
-        createTime: maps[i]['createTime'],
-      );
-    });
+    }
   }
 
   /// Todoの1件取得
   Future<TodoModel> findTodo() async {
-    final Database db = await database;
+    try {
+      final Database db = await database;
 
-    final List<Map<String, dynamic>> maps = await db.query(
-      _tableName,
-      where: "createTime = ?",
-      whereArgs: [createTime],
-    ).onError((error, stackTrace) {
+      final List<Map<String, dynamic>> maps = await db.query(
+        _tableName,
+        where: "createTime = ?",
+        whereArgs: [createTime],
+      );
+      return List.generate(maps.length, (i) {
+        return TodoModel(
+          title: maps[i]['title'],
+          date: maps[i]['date'],
+          detail: maps[i]['detail'],
+          createTime: maps[i]['createTime'],
+        );
+      }).first;
+    } catch (error, stackTrace) {
       print("stackTrace: $stackTrace");
       print("Todoの取得エラー: $error");
       return throw ("Todoの取得に失敗しました");
-    });
-
-    return List.generate(maps.length, (i) {
-      return TodoModel(
-        title: maps[i]['title'],
-        date: maps[i]['date'],
-        detail: maps[i]['detail'],
-        createTime: maps[i]['createTime'],
-      );
-    }).first;
+    }
   }
 
   /// Todoの全件削除
   Future<void> deleteALL() async {
-    final Database db = await database;
-    db.delete(_tableName).onError((error, stackTrace) {
+    try {
+      final Database db = await database;
+      db.delete(_tableName);
+    } catch (error, stackTrace) {
       print("stackTrace: $stackTrace");
       print("Todoの全件削除エラー: $error");
       return throw ("Todoの削除に失敗しました");
-    });
+    }
   }
 
   /// Todoを一件削除
   Future<void> deleteTodo() async {
     final Database db = await database;
-
-    db.delete(
-      _tableName,
-      where: "createTime = ?",
-      whereArgs: [createTime],
-    ).onError((error, stackTrace) {
-      print("stackTrace: $stackTrace");
-      print("Todoの削除エラー: $error");
+    try {
+      db.delete(
+        _tableName,
+        where: "createTime = ?",
+        whereArgs: [createTime],
+      );
+    } catch (e, s) {
+      print("Todoの削除エラー: $e");
+      print("stackTrace: $s");
       return throw ("Todoの削除に失敗しました");
-    });
+    }
   }
 }
