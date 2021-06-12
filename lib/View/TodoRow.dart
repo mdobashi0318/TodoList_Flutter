@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/model/TodoModel.dart';
+import 'package:todolist/other/CompleteFlag.dart';
 
 class TodoRow extends StatelessWidget {
   TodoRow({Key key, this.todoModel, this.onTap}) : super(key: key);
@@ -9,6 +10,7 @@ class TodoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("todoModel.completeFlag: ${todoModel.completeFlag.index}");
     return Card(
       child: ListTile(
         title: Text(
@@ -19,6 +21,9 @@ class TodoRow extends StatelessWidget {
           todoModel.date,
           style: TextStyle(fontSize: 18),
         ),
+        leading: todoModel.completeFlag.index == CompleteFlag.unfinished.index
+            ? Icon(Icons.check_box_outline_blank_rounded)
+            : Icon(Icons.check_box_rounded),
         onTap: onTap,
       ),
     );

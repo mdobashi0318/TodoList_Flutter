@@ -1,7 +1,8 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
-import 'package:todolist/Other/Format.dart';
+import 'package:todolist/other/Format.dart';
+import 'package:todolist/other/CompleteFlag.dart';
 
 class TodoModel {
   final String _tableName = "todo";
@@ -15,16 +16,25 @@ class TodoModel {
   /// 詳細
   String detail;
 
+  /// 完了フラグ
+  CompleteFlag completeFlag;
+
   /// 作成時間(プライマリキー)
   String createTime;
 
-  TodoModel({this.title, this.date, this.detail, this.createTime});
+  TodoModel({
+    this.title,
+    this.date,
+    this.detail,
+    this.createTime,
+    this.completeFlag,
+  });
 
   final Future<Database> database = openDatabase(
     join('TodoModel.db'),
     onCreate: (db, version) {
       return db.execute(
-        "CREATE TABLE todo(createTime TEXT PRIMARY KEY, title TEXT, date TEXT, detail TEXT)",
+        "CREATE TABLE todo(createTime TEXT PRIMARY KEY, title TEXT, date TEXT, detail TEXT, completeFlag Text)",
       );
     },
     version: 1,
@@ -37,6 +47,7 @@ class TodoModel {
       "title": title,
       "date": date,
       "detail": detail,
+      "completeFlag": completeFlag == CompleteFlag.unfinished ? "0" : "1",
     };
   }
 
@@ -86,6 +97,9 @@ class TodoModel {
           date: maps[i]['date'],
           detail: maps[i]['detail'],
           createTime: maps[i]['createTime'],
+          completeFlag: maps[i]['completeFlag'] == "0"
+              ? CompleteFlag.unfinished
+              : CompleteFlag.completion,
         );
       });
     } catch (e, s) {
@@ -111,6 +125,9 @@ class TodoModel {
           date: maps[i]['date'],
           detail: maps[i]['detail'],
           createTime: maps[i]['createTime'],
+          completeFlag: maps[i]['completeFlag'] == "0"
+              ? CompleteFlag.unfinished
+              : CompleteFlag.completion,
         );
       }).first;
     } catch (error, stackTrace) {

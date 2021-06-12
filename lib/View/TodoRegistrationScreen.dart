@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/model/TodoModel.dart';
+import 'package:todolist/other/CompleteFlag.dart';
 import 'package:todolist/other/Format.dart';
 import 'package:todolist/other/Mode.dart';
 
@@ -18,6 +19,7 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
   String _title = "";
   String _date = "";
   String _detail = "";
+  bool _completeFlag = false;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -27,6 +29,10 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
       _title = widget.todoModel.title;
       _date = widget.todoModel.date;
       _detail = widget.todoModel.detail;
+      _completeFlag =
+          widget.todoModel.completeFlag.index == CompleteFlag.unfinished.index
+              ? false
+              : true;
     }
     super.initState();
   }
@@ -86,6 +92,7 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
                     }
                     return null;
                   }),
+              _completeRow(),
             ],
           ),
         ),
@@ -101,6 +108,26 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
     _detail = text;
   }
 
+  void _changeCompleteFlag(bool flag) {
+    setState(() {
+      _completeFlag = flag;
+    });
+  }
+
+  Widget _completeRow() {
+    if (widget.mode == Mode.Edit) {
+      return Row(
+        children: [
+          Text("完了"),
+          Switch(
+              value: _completeFlag,
+              onChanged: (flag) => _changeCompleteFlag(flag)),
+        ],
+      );
+    }
+    return Container();
+  }
+
   /// Todoの追加または、更新するボタン
   IconButton _addTodoButton() => IconButton(
         icon: Icon(Icons.add),
@@ -111,17 +138,28 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
           } else {
             switch (widget.mode) {
               case Mode.Add:
-                TodoModel(title: _title, date: _date, detail: _detail)
+                TodoModel(
+                  title: _title,
+                  date: _date,
+                  detail: _detail,
+                  completeFlag: _completeFlag == false
+                      ? CompleteFlag.unfinished
+                      : CompleteFlag.completion,
+                )
                     .addTodo()
                     .then((value) => Navigator.of(context).pop("0"))
                     .catchError((error) => _errorSnackBar(error));
                 return;
               case Mode.Edit:
                 TodoModel(
-                        title: _title,
-                        date: _date,
-                        detail: _detail,
-                        createTime: widget.todoModel.createTime)
+                  title: _title,
+                  date: _date,
+                  detail: _detail,
+                  createTime: widget.todoModel.createTime,
+                  completeFlag: _completeFlag == false
+                      ? CompleteFlag.unfinished
+                      : CompleteFlag.completion,
+                )
                     .updateTodo()
                     .then((value) => Navigator.of(context).pop())
                     .catchError((error) => _errorSnackBar(error));
