@@ -10,7 +10,6 @@ class TodoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("todoModel.completeFlag: ${todoModel.completeFlag.index}");
     return Card(
       child: ListTile(
         title: Text(

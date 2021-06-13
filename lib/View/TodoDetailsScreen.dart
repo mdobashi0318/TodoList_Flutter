@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todolist/model/TodoModel.dart';
+import 'package:todolist/other/CompleteFlag.dart';
 import 'package:todolist/other/Mode.dart';
 import 'package:todolist/view/TodoRegistrationScreen.dart';
 import 'package:todolist/viewModel/TodoDetailsScreenViewModel.dart';
@@ -58,6 +59,14 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
                     (context, TodoDetailsScreenViewModel value, child) {
                   return _valueRow("詳細", value.model.detail);
                 }),
+                Consumer(builder:
+                    (context, TodoDetailsScreenViewModel value, child) {
+                  return _valueRow(
+                      "実施状況",
+                      value.model.completeFlag == CompleteFlag.unfinished
+                          ? "未実施"
+                          : "完了");
+                })
               ],
             );
           },
