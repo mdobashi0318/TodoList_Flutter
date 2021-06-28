@@ -8,6 +8,7 @@ import 'package:todolist/other/Mode.dart';
 import 'package:todolist/view/TodoRegistrationScreen.dart';
 import 'package:todolist/viewModel/TodoDetailsScreenViewModel.dart';
 
+/// Todoの詳細画面
 class TodoDetailsScreen extends StatefulWidget {
   final TodoModel todoModel;
 
@@ -75,6 +76,7 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
     );
   }
 
+  /// 編集画面を表示する
   void didTapEditButton() {
     Navigator.push(
       context,
@@ -87,6 +89,7 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
     });
   }
 
+  /// 行のタイトルと値をセットする
   Widget _valueRow(String title, String value) {
     return ListTile(
       title: Text(
@@ -100,6 +103,7 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
     );
   }
 
+  /// 「編集」「削除」ボタンをセットしたメニューを表示する
   Widget _popupMenu() {
     return PopupMenuButton(
       onSelected: (mode) {
@@ -120,6 +124,7 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
     );
   }
 
+  /// Todoの削除時のアラートを表示する
   Future<void> _showAlert(BuildContext contex) async {
     showDialog(
       context: context,
@@ -146,6 +151,7 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
     );
   }
 
+  /// SnackBarを表示する
   void _errorSnackBar(BuildContext context, String error) {
     SnackBar snackBar = SnackBar(
       content: Text(error),

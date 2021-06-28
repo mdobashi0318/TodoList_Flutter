@@ -8,6 +8,8 @@ class TodoDetailsScreenViewModel extends ChangeNotifier {
 
   TodoModel model;
   String msg;
+
+  /// Todoを１件取得する
   Future<void> findTodo() async {
     msg = "";
     await model

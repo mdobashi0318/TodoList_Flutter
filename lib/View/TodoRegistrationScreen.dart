@@ -16,9 +16,16 @@ class TodoRegistrationScreen extends StatefulWidget {
 }
 
 class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
+  /// タイトル
   String _title = "";
+
+  /// 日付
   String _date = "";
+
+  /// 詳細
   String _detail = "";
+
+  /// 完了フラグ
   bool _completeFlag = false;
 
   final _formKey = GlobalKey<FormState>();
@@ -114,6 +121,7 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
     });
   }
 
+  /// 完了フラグを設定するスイッチの行を作成する
   Widget _completeRow() {
     if (widget.mode == Mode.Edit) {
       return Row(
@@ -209,6 +217,7 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
     }
   }
 
+  /// SnackBarを表示する
   void _errorSnackBar(String error) {
     SnackBar snackBar = SnackBar(
       content: Text(error),

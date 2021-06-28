@@ -10,6 +10,7 @@ class TodoListViewModel extends ChangeNotifier {
     allFetch();
   }
 
+  /// 全件取得する
   Future<void> allFetch() async {
     message = "";
     await TodoModel().findAllTodo().then((value) {
@@ -25,6 +26,7 @@ class TodoListViewModel extends ChangeNotifier {
     }).whenComplete(() => notifyListeners());
   }
 
+  /// 全件削除する
   Future<void> allDelete() async {
     try {
       await TodoModel().deleteALL();

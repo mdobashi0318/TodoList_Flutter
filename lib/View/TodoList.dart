@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/model/TodoModel.dart';
 import 'package:todolist/view/TodoDetailsScreen.dart';
-import 'package:todolist/view/TodoRow.dart';
+import 'package:todolist/view/widgets/TodoRow.dart';
 import 'package:todolist/viewModel/TodoListViewModel.dart';
 
 class TodoList extends StatelessWidget {
@@ -32,6 +32,6 @@ class TodoList extends StatelessWidget {
       MaterialPageRoute(
         builder: (context) => TodoDetailsScreen(todoModel: model),
       ),
-    ).then((value) => viewModel.allFetch());
+    ).then((_) => viewModel.allFetch());
   }
 }
