@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todolist/other/Mode.dart';
-import 'package:todolist/view/TodoList.dart';
+import 'package:todolist/other/mode_enum.dart';
+import 'package:todolist/view/todo_list.dart';
 
-import 'package:todolist/view/TodoRegistrationScreen.dart';
-import 'package:todolist/viewModel/TodoListViewModel.dart';
+import 'package:todolist/view/todo_registration_screen.dart';
+import 'package:todolist/viewModel/todo_list_viewmodel.dart';
 
 void main() {
   runApp(MyApp());

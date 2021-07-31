@@ -1,8 +1,8 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
-import 'package:todolist/other/Format.dart';
-import 'package:todolist/other/CompleteFlag.dart';
+import 'package:todolist/other/format.dart';
+import 'package:todolist/other/complete_enum.dart';
 
 class TodoModel {
   final String _tableName = "todo";

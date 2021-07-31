@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:todolist/model/TodoModel.dart';
-import 'package:todolist/other/CompleteFlag.dart';
-import 'package:todolist/other/Format.dart';
-import 'package:todolist/other/Mode.dart';
+import 'package:todolist/model/todomodel.dart';
+import 'package:todolist/other/complete_enum.dart';
+import 'package:todolist/other/format.dart';
+import 'package:todolist/other/mode_enum.dart';
 
 class TodoRegistrationScreen extends StatefulWidget {
   final TodoModel todoModel;

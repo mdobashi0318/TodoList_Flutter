@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:todolist/model/TodoModel.dart';
-import 'package:todolist/other/CompleteFlag.dart';
+import 'package:todolist/model/todomodel.dart';
+import 'package:todolist/other/complete_enum.dart';
 
 class TodoRow extends StatelessWidget {
   TodoRow({Key key, this.todoModel, this.onTap}) : super(key: key);

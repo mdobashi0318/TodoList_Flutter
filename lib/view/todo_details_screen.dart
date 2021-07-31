@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todolist/model/TodoModel.dart';
-import 'package:todolist/other/CompleteFlag.dart';
-import 'package:todolist/other/Mode.dart';
-import 'package:todolist/view/TodoRegistrationScreen.dart';
-import 'package:todolist/viewModel/TodoDetailsScreenViewModel.dart';
+import 'package:todolist/model/todomodel.dart';
+import 'package:todolist/other/complete_enum.dart';
+import 'package:todolist/other/mode_enum.dart';
+import 'package:todolist/view/todo_registration_screen.dart';
+import 'package:todolist/viewModel/todo_details_screen_viewmodel.dart';
 
 /// Todoの詳細画面
 class TodoDetailsScreen extends StatefulWidget {

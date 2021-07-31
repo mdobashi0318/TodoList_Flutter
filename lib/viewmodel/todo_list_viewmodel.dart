@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todolist/model/TodoModel.dart';
+import 'package:todolist/model/todomodel.dart';
 
 class TodoListViewModel extends ChangeNotifier {
   List<TodoModel> model = [];
