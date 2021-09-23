@@ -1,8 +1,9 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
-import 'package:todolist/other/format.dart';
 import 'package:todolist/other/complete_enum.dart';
+import 'package:todolist/other/format.dart';
+
 
 class TodoModel {
   final String _tableName = "todo";
@@ -41,8 +42,8 @@ class TodoModel {
   );
 
   Map<String, dynamic> toMap() {
-    final _createTime = createTime == null ? Format().createTime : createTime;
-    return {
+    final _createTime = createTime ?? Format().createTime;
+    return <String, String>{
       "createTime": _createTime,
       "title": title,
       "date": date,
@@ -54,15 +55,16 @@ class TodoModel {
   /// Todoの作成
   Future<void> addTodo() async {
     final Database db = await database;
-
     try {
       await db.insert(
         _tableName,
-        this.toMap(),
+        toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
     } catch (e, s) {
+      // ignore: avoid_print
       print("Error: $e");
+      // ignore: avoid_print
       print("stackTrace: $s");
       return throw ("Todoの追加に失敗しました");
     }
@@ -74,13 +76,15 @@ class TodoModel {
       final Database db = await database;
       await db.update(
         _tableName,
-        this.toMap(),
+        toMap(),
         where: "createTime = ?",
         whereArgs: [createTime],
         conflictAlgorithm: ConflictAlgorithm.fail,
       );
     } catch (e, s) {
+      // ignore: avoid_print
       print("Error: $e");
+      // ignore: avoid_print
       print("stackTrace: $s");
       return throw ("Todoの更新に失敗しました");
     }
@@ -93,17 +97,19 @@ class TodoModel {
       final List<Map<String, dynamic>> maps = await db.query(_tableName);
       return List.generate(maps.length, (i) {
         return TodoModel(
-          title: maps[i]['title'],
-          date: maps[i]['date'],
-          detail: maps[i]['detail'],
-          createTime: maps[i]['createTime'],
+          title: maps[i]['title'] as String,
+          date: maps[i]['date'] as String,
+          detail: maps[i]['detail'] as String,
+          createTime: maps[i]['createTime'] as String,
           completeFlag: maps[i]['completeFlag'] == "0"
               ? CompleteFlag.unfinished
               : CompleteFlag.completion,
         );
       });
     } catch (e, s) {
+      // ignore: avoid_print
       print("error: $e");
+      // ignore: avoid_print
       print("stackTrace: $s");
       return throw ("Todoの取得に失敗しました");
     }
@@ -121,17 +127,19 @@ class TodoModel {
       );
       return List.generate(maps.length, (i) {
         return TodoModel(
-          title: maps[i]['title'],
-          date: maps[i]['date'],
-          detail: maps[i]['detail'],
-          createTime: maps[i]['createTime'],
+          title: maps[i]['title'] as String,
+          date: maps[i]['date'] as String,
+          detail: maps[i]['detail'] as String,
+          createTime: maps[i]['createTime'] as String,
           completeFlag: maps[i]['completeFlag'] == "0"
               ? CompleteFlag.unfinished
               : CompleteFlag.completion,
         );
       }).first;
     } catch (error, stackTrace) {
+      // ignore: avoid_print
       print("stackTrace: $stackTrace");
+      // ignore: avoid_print
       print("Todoの取得エラー: $error");
       return throw ("Todoの取得に失敗しました");
     }
@@ -143,7 +151,9 @@ class TodoModel {
       final Database db = await database;
       db.delete(_tableName);
     } catch (error, stackTrace) {
+      // ignore: avoid_print
       print("stackTrace: $stackTrace");
+      // ignore: avoid_print
       print("Todoの全件削除エラー: $error");
       return throw ("Todoの削除に失敗しました");
     }
@@ -159,7 +169,9 @@ class TodoModel {
         whereArgs: [createTime],
       );
     } catch (e, s) {
+      // ignore: avoid_print
       print("Todoの削除エラー: $e");
+      // ignore: avoid_print
       print("stackTrace: $s");
       return throw ("Todoの削除に失敗しました");
     }

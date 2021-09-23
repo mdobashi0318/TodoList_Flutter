@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todolist/model/todomodel.dart';
+import 'package:todolist/model/todo_model.dart';
 
 class TodoListViewModel extends ChangeNotifier {
   List<TodoModel> model = [];
@@ -21,8 +21,8 @@ class TodoListViewModel extends ChangeNotifier {
       if (value.isEmpty) {
         message = noTodoMsg;
       }
-    }).catchError((error) {
-      message = error;
+    }).catchError((dynamic error) {
+      message = error as String;
     }).whenComplete(() => notifyListeners());
   }
 

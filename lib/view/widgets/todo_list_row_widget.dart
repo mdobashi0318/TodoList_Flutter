@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:todolist/model/todomodel.dart';
+import 'package:todolist/model/todo_model.dart';
 import 'package:todolist/other/complete_enum.dart';
 
 class TodoRow extends StatelessWidget {
-  TodoRow({Key key, this.todoModel, this.onTap}) : super(key: key);
+  const TodoRow({Key key, this.todoModel, this.onTap}) : super(key: key);
 
   final TodoModel todoModel;
   final GestureTapCallback onTap;
@@ -14,15 +14,15 @@ class TodoRow extends StatelessWidget {
       child: ListTile(
         title: Text(
           todoModel.title,
-          style: TextStyle(fontSize: 18),
+          style: const TextStyle(fontSize: 18),
         ),
         subtitle: Text(
           todoModel.date,
-          style: TextStyle(fontSize: 18),
+          style: const TextStyle(fontSize: 18),
         ),
         leading: todoModel.completeFlag.index == CompleteFlag.unfinished.index
-            ? Icon(Icons.check_box_outline_blank_rounded)
-            : Icon(Icons.check_box_rounded),
+            ? const Icon(Icons.check_box_outline_blank_rounded)
+            : const Icon(Icons.check_box_rounded),
         onTap: onTap,
       ),
     );

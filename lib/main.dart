@@ -7,10 +7,12 @@ import 'package:todolist/view/todo_registration_screen.dart';
 import 'package:todolist/viewModel/todo_list_viewmodel.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key key}) : super(key: key);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -19,13 +21,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key}) : super(key: key);
+  const MyHomePage({Key key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -47,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: const Text("TodoList"),
         actions: [
           IconButton(
-            icon: Icon(Icons.delete),
+            icon: const Icon(Icons.delete),
             onPressed: () => _showAlert(context),
           ),
         ],
@@ -55,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: ChangeNotifierProvider<TodoListViewModel>(
         create: (context) => viewModel,
         child: Consumer<TodoListViewModel>(
-          builder: (context, TodoListViewModel viewModel, _) {
+          builder: (context, viewModel, _) {
             if (viewModel.model.isNotEmpty) {
               return TodoList(
                 viewModel: viewModel,
@@ -68,12 +70,12 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          Navigator.push(
+          Navigator.push<void>(
             context,
             MaterialPageRoute(
-                builder: (context) => TodoRegistrationScreen(mode: Mode.Add),
+                builder: (context) => const TodoRegistrationScreen(mode: Mode.Add),
                 fullscreenDialog: true),
-          ).then((value) {
+          ).then((dynamic value) {
             if (value == "0") viewModel.allFetch();
           });
         },
@@ -81,24 +83,24 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _showAlert(BuildContext contex) {
-    showDialog(
+  Future<void> _showAlert(BuildContext contex) {
+    return showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
-          title: Text("Todoを全件削除しますか？"),
+          title: const Text("Todoを全件削除しますか？"),
           actions: <Widget>[
             SimpleDialogOption(
-              child: Text("削除"),
+              child: const Text("削除"),
               onPressed: () async {
                 await viewModel
                     .allDelete()
-                    .catchError((error) => _errorSnackBar(error))
+                    .catchError((dynamic error) => _errorSnackBar(error.toString()))
                     .whenComplete(() => Navigator.pop(context));
               },
             ),
             SimpleDialogOption(
-              child: Text("キャンセル"),
+              child: const Text("キャンセル"),
               onPressed: () => Navigator.pop(context),
             ),
           ],
@@ -110,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _errorSnackBar(String error) {
     SnackBar snackBar = SnackBar(
       content: Text(error),
-      duration: Duration(seconds: 3),
+      duration: const Duration(seconds: 3),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }

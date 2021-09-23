@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todolist/model/todomodel.dart';
+import 'package:todolist/model/todo_model.dart';
 import 'package:todolist/other/complete_enum.dart';
 import 'package:todolist/other/format.dart';
 import 'package:todolist/other/mode_enum.dart';
@@ -8,7 +8,7 @@ class TodoRegistrationScreen extends StatefulWidget {
   final TodoModel todoModel;
   final Mode mode;
 
-  TodoRegistrationScreen({Key key, this.todoModel, @required this.mode})
+  const TodoRegistrationScreen({Key key, this.todoModel, @required this.mode})
       : super(key: key);
 
   @override
@@ -63,7 +63,7 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
               TextFormField(
                 controller: TextEditingController(text: _title),
                 obscureText: false,
-                decoration: InputDecoration(labelText: "タイトル"),
+                decoration: const InputDecoration(labelText: "タイトル"),
                 onChanged: _changeTitle,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -72,26 +72,24 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
                   return null;
                 },
               ),
-              Container(
-                child: Row(
-                  children: [
-                    OutlinedButton(
-                      onPressed: () {
-                        _selectDate();
-                      },
-                      child: const Text("期日"),
-                    ),
-                    SizedBox(
-                      width: 50,
-                    ),
-                    Text(_date),
-                  ],
-                ),
+              Row(
+                children: [
+                  OutlinedButton(
+                    onPressed: () {
+                      _selectDate();
+                    },
+                    child: const Text("期日"),
+                  ),
+                  const SizedBox(
+                    width: 50,
+                  ),
+                  Text(_date),
+                ],
               ),
               TextFormField(
                   controller: TextEditingController(text: _detail),
                   obscureText: false,
-                  decoration: InputDecoration(labelText: "詳細"),
+                  decoration: const InputDecoration(labelText: "詳細"),
                   onChanged: _changeDetail,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -126,7 +124,7 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
     if (widget.mode == Mode.Edit) {
       return Row(
         children: [
-          Text("完了"),
+          const Text("完了"),
           Switch(
               value: _completeFlag,
               onChanged: (flag) => _changeCompleteFlag(flag)),
@@ -138,7 +136,7 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
 
   /// Todoの追加または、更新するボタン
   IconButton _addTodoButton() => IconButton(
-        icon: Icon(Icons.add),
+        icon: const Icon(Icons.add),
         onPressed: () {
           if (_title.isEmpty || _date.isEmpty || _detail.isEmpty) {
             _showAlert(context);
@@ -155,9 +153,9 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
                       : CompleteFlag.completion,
                 )
                     .addTodo()
-                    .then((value) => Navigator.of(context).pop("0"))
-                    .catchError((error) => _errorSnackBar(error));
-                return;
+                    .then((_) => Navigator.of(context).pop<String>("0"))
+                    .catchError((dynamic error) => _errorSnackBar(error.toString()));
+                break;
               case Mode.Edit:
                 TodoModel(
                   title: _title,
@@ -170,8 +168,7 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
                 )
                     .updateTodo()
                     .then((value) => Navigator.of(context).pop())
-                    .catchError((error) => _errorSnackBar(error));
-
+                    .catchError((dynamic error) => _errorSnackBar(error.toString()));
                 break;
               case Mode.Delete:
                 break;
@@ -181,15 +178,15 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
       );
 
   /// 未入力があったときににダイアログを表示させる
-  void _showAlert(BuildContext contex) {
-    showDialog(
+  Future<void> _showAlert(BuildContext contex) {
+    return showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return SimpleDialog(
-          title: Text("入力されていない項目があります"),
+          title: const Text("入力されていない項目があります"),
           children: <Widget>[
             SimpleDialogOption(
-              child: Text("閉じる"),
+              child: const Text("閉じる"),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -202,12 +199,12 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
 
   /// 日付を設定するためのPicker
   Future<void> _selectDate() async {
-    DateTime date = new DateTime.now();
+    DateTime date = DateTime.now();
     final DateTime picker = await showDatePicker(
         context: context,
         initialDate: date,
         firstDate: DateTime.now(),
-        lastDate: new DateTime.now().add(new Duration(days: 360)),
+        lastDate: DateTime.now().add(const Duration(days: 360)),
         currentDate: date);
     if (picker != null) {
       setState(() {
@@ -221,7 +218,7 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
   void _errorSnackBar(String error) {
     SnackBar snackBar = SnackBar(
       content: Text(error),
-      duration: Duration(seconds: 3),
+      duration: const Duration(seconds: 3),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
