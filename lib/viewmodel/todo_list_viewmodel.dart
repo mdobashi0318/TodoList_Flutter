@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todolist/model/TodoModel.dart';
+import 'package:todolist/model/todo_model.dart';
 
 class TodoListViewModel extends ChangeNotifier {
   List<TodoModel> model = [];
@@ -10,6 +10,7 @@ class TodoListViewModel extends ChangeNotifier {
     allFetch();
   }
 
+  /// 全件取得する
   Future<void> allFetch() async {
     message = "";
     await TodoModel().findAllTodo().then((value) {
@@ -20,11 +21,12 @@ class TodoListViewModel extends ChangeNotifier {
       if (value.isEmpty) {
         message = noTodoMsg;
       }
-    }).catchError((error) {
-      message = error;
+    }).catchError((dynamic error) {
+      message = error as String;
     }).whenComplete(() => notifyListeners());
   }
 
+  /// 全件削除する
   Future<void> allDelete() async {
     try {
       await TodoModel().deleteALL();
