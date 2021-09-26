@@ -9,31 +9,21 @@ import 'package:todolist/view/todo_registration_screen.dart';
 import 'package:todolist/viewModel/todo_details_screen_viewmodel.dart';
 
 /// Todoの詳細画面
-class TodoDetailsScreen extends StatefulWidget {
+// ignore: must_be_immutable
+class TodoDetailsScreen extends StatelessWidget {
+  TodoDetailsScreen({Key key, this.todoModel}) : super(key: key);
   final TodoModel todoModel;
-
-  const TodoDetailsScreen({Key key, this.todoModel}) : super(key: key);
-
-  @override
-  _TodoDetailsScreen createState() => _TodoDetailsScreen();
-}
-
-class _TodoDetailsScreen extends State<TodoDetailsScreen> {
   TodoDetailsScreenViewModel viewModel;
 
   @override
-  void initState() {
-    super.initState();
-    viewModel = TodoDetailsScreenViewModel(widget.todoModel);
-  }
-
-  @override
   Widget build(BuildContext context) {
+    viewModel = TodoDetailsScreenViewModel(
+        ModalRoute.of(context).settings.arguments as TodoModel);
     return Scaffold(
       appBar: AppBar(
         title: const Text("詳細"),
         actions: [
-          _popupMenu(),
+          _popupMenu(context),
         ],
       ),
       body: Container(
@@ -48,20 +38,20 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
             }
             return Column(
               children: [
-                Consumer<TodoDetailsScreenViewModel>(builder:
-                    (context, value, child) {
+                Consumer<TodoDetailsScreenViewModel>(
+                    builder: (context, value, child) {
                   return _valueRow('タイトル', value.model.title);
                 }),
-                Consumer<TodoDetailsScreenViewModel>(builder:
-                    (context, value, child) {
+                Consumer<TodoDetailsScreenViewModel>(
+                    builder: (context, value, child) {
                   return _valueRow("期日", value.model.date);
                 }),
-                Consumer<TodoDetailsScreenViewModel>(builder:
-                    (context, value, child) {
+                Consumer<TodoDetailsScreenViewModel>(
+                    builder: (context, value, child) {
                   return _valueRow("詳細", value.model.detail);
                 }),
-                Consumer<TodoDetailsScreenViewModel>(builder:
-                    (context, value, child) {
+                Consumer<TodoDetailsScreenViewModel>(
+                    builder: (context, value, child) {
                   return _valueRow(
                       "実施状況",
                       value.model.completeFlag == CompleteFlag.unfinished
@@ -77,7 +67,7 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
   }
 
   /// 編集画面を表示する
-  void didTapEditButton() {
+  void didTapEditButton(BuildContext context) {
     Navigator.push<void>(
       context,
       MaterialPageRoute(
@@ -104,12 +94,12 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
   }
 
   /// 「編集」「削除」ボタンをセットしたメニューを表示する
-  Widget _popupMenu() {
+  Widget _popupMenu(BuildContext context) {
     return PopupMenuButton(
       onSelected: (dynamic mode) {
         switch (mode as Mode) {
           case Mode.Edit:
-            didTapEditButton();
+            didTapEditButton(context);
             break;
           case Mode.Delete:
             _showAlert(context);
@@ -128,7 +118,7 @@ class _TodoDetailsScreen extends State<TodoDetailsScreen> {
   }
 
   /// Todoの削除時のアラートを表示する
-  Future<void> _showAlert(BuildContext contex) async {
+  Future<void> _showAlert(BuildContext context) async {
     return showDialog(
       context: context,
       builder: (context) {

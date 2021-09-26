@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todolist/model/todo_model.dart';
 import 'package:todolist/other/mode_enum.dart';
+import 'package:todolist/view/todo_details_screen.dart';
 import 'package:todolist/view/todo_list.dart';
 
 import 'package:todolist/view/todo_registration_screen.dart';
-import 'package:todolist/viewModel/todo_list_viewmodel.dart';
+import 'package:todolist/viewmodel/todo_list_viewmodel.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,6 +23,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      routes: <String, WidgetBuilder>{
+        '/detail': (context) => TodoDetailsScreen(todoModel: TodoModel()),
+      },
       home: const MyHomePage(),
     );
   }
@@ -44,40 +49,59 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("TodoList"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () => _showAlert(context),
-          ),
-        ],
-      ),
-      body: ChangeNotifierProvider<TodoListViewModel>(
-        create: (context) => viewModel,
-        child: Consumer<TodoListViewModel>(
-          builder: (context, viewModel, _) {
-            if (viewModel.model.isNotEmpty) {
-              return TodoList(
-                viewModel: viewModel,
-              );
-            }
-            return Center(child: Text(viewModel.message));
-          },
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          Navigator.push<void>(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const TodoRegistrationScreen(mode: Mode.Add),
-                fullscreenDialog: true),
-          ).then((dynamic value) {
-            if (value == "0") viewModel.allFetch();
-          });
+    return ChangeNotifierProvider<TodoListViewModel>(
+      create: (context) => viewModel,
+      child: Consumer<TodoListViewModel>(
+        builder: (context, viewModel, _) {
+          return DefaultTabController(
+            length: 3,
+            child: Scaffold(
+              appBar: AppBar(
+                title: const Text("TodoList"),
+                bottom: const TabBar(
+                  tabs: [
+                    Tab(icon: Icon(Icons.safety_divider)),
+                    Tab(icon: Icon(Icons.safety_divider_rounded)),
+                    Tab(icon: Icon(Icons.safety_divider_sharp)),
+                  ],
+                ),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () => _showAlert(context),
+                  ),
+                ],
+              ),
+              body: TabBarView(children: [
+                TodoList(
+                  model: viewModel.model,
+                  viewModel: viewModel,
+                ),
+                TodoList(
+                  model: viewModel.unfinishedModel,
+                  viewModel: viewModel,
+                ),
+                TodoList(
+                  model: viewModel.completionModel,
+                  viewModel: viewModel,
+                )
+              ]),
+              floatingActionButton: FloatingActionButton(
+                child: const Icon(Icons.add),
+                onPressed: () {
+                  Navigator.push<void>(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            const TodoRegistrationScreen(mode: Mode.Add),
+                        fullscreenDialog: true),
+                  ).then((dynamic value) {
+                    if (value == "0") viewModel.fetchModels();
+                  });
+                },
+              ),
+            ),
+          );
         },
       ),
     );
@@ -95,7 +119,8 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () async {
                 await viewModel
                     .allDelete()
-                    .catchError((dynamic error) => _errorSnackBar(error.toString()))
+                    .catchError(
+                        (dynamic error) => _errorSnackBar(error.toString()))
                     .whenComplete(() => Navigator.pop(context));
               },
             ),
