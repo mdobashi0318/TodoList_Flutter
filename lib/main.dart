@@ -60,9 +60,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 title: const Text("TodoList"),
                 bottom: const TabBar(
                   tabs: [
-                    Tab(icon: Icon(Icons.safety_divider)),
-                    Tab(icon: Icon(Icons.safety_divider_rounded)),
-                    Tab(icon: Icon(Icons.safety_divider_sharp)),
+                    Tab(text: '全件',),
+                    Tab(text: '未完了',),
+                    Tab(text: '完了',),
                   ],
                 ),
                 actions: [
