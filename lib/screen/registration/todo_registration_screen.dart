@@ -153,7 +153,7 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
                       ? CompleteFlag.unfinished
                       : CompleteFlag.completion,
                 )
-                    .addTodo()
+                    .add()
                     .then((_) => Navigator.of(context).pop<String>("0"))
                     .catchError((dynamic error) => _errorSnackBar(error.toString()));
                 break;
@@ -167,7 +167,7 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
                       ? CompleteFlag.unfinished
                       : CompleteFlag.completion,
                 )
-                    .updateTodo()
+                    .update()
                     .then((value) => Navigator.of(context).pop())
                     .catchError((dynamic error) => _errorSnackBar(error.toString()));
                 break;

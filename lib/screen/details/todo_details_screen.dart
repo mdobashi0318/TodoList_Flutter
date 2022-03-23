@@ -133,7 +133,7 @@ class TodoDetailsScreen extends StatelessWidget {
               child: const Text("削除"),
               onPressed: () async {
                 await viewModel.model
-                    .deleteTodo()
+                    .delete()
                     .then((value) => Navigator.of(context).pop());
                 Navigator.of(context).pop();
               },

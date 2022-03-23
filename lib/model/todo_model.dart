@@ -1,12 +1,17 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite/sqlite_api.dart';
+
 import 'package:todolist/other/complete_enum.dart';
 import 'package:todolist/other/date_format.dart';
 
+import 'base_model.dart';
 
-class TodoModel {
-  final String _tableName = "todo";
+class TodoModel implements BaseModel {
+  @override
+  String tableName = 'todo';
+
+  @override
+  Future<Database> database;
 
   /// タイトル
   String title;
@@ -29,17 +34,17 @@ class TodoModel {
     this.detail,
     this.createTime,
     this.completeFlag,
-  });
-
-  final Future<Database> database = openDatabase(
-    join('TodoModel.db'),
-    onCreate: (db, version) {
-      return db.execute(
-        "CREATE TABLE todo(createTime TEXT PRIMARY KEY, title TEXT, date TEXT, detail TEXT, completeFlag Text)",
-      );
-    },
-    version: 1,
-  );
+  }) {
+    database = openDatabase(
+      join('TodoModel.db'),
+      onCreate: (db, version) {
+        return db.execute(
+          "CREATE TABLE $tableName(createTime TEXT PRIMARY KEY, title TEXT, date TEXT, detail TEXT, completeFlag Text)",
+        );
+      },
+      version: 1,
+    );
+  }
 
   Map<String, dynamic> toMap() {
     final _createTime = createTime ?? Format().createTime;
@@ -53,11 +58,12 @@ class TodoModel {
   }
 
   /// Todoの作成
-  Future<void> addTodo() async {
+  @override
+  Future<void> add() async {
     final Database db = await database;
     try {
       await db.insert(
-        _tableName,
+        tableName,
         toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
@@ -71,11 +77,12 @@ class TodoModel {
   }
 
   /// Todoの更新
-  Future<void> updateTodo() async {
+  @override
+  Future<void> update() async {
     try {
       final Database db = await database;
       await db.update(
-        _tableName,
+        tableName,
         toMap(),
         where: "createTime = ?",
         whereArgs: [createTime],
@@ -91,10 +98,11 @@ class TodoModel {
   }
 
   /// Todoの全件取得
-  Future<List<TodoModel>> findAllTodo() async {
+  @override
+  Future<List<TodoModel>> allFind() async {
     final Database db = await database;
     try {
-      final List<Map<String, dynamic>> maps = await db.query(_tableName);
+      final List<Map<String, dynamic>> maps = await db.query(tableName);
       return List.generate(maps.length, (i) {
         return TodoModel(
           title: maps[i]['title'] as String,
@@ -116,12 +124,13 @@ class TodoModel {
   }
 
   /// Todoの1件取得
-  Future<TodoModel> findTodo() async {
+  @override
+  Future<TodoModel> find() async {
     try {
       final Database db = await database;
 
       final List<Map<String, dynamic>> maps = await db.query(
-        _tableName,
+        tableName,
         where: "createTime = ?",
         whereArgs: [createTime],
       );
@@ -146,10 +155,11 @@ class TodoModel {
   }
 
   /// Todoの全件削除
-  Future<void> deleteALL() async {
+  @override
+  Future<void> allDelete() async {
     try {
       final Database db = await database;
-      db.delete(_tableName);
+      db.delete(tableName);
     } catch (error, stackTrace) {
       // ignore: avoid_print
       print("stackTrace: $stackTrace");
@@ -160,11 +170,12 @@ class TodoModel {
   }
 
   /// Todoを一件削除
-  Future<void> deleteTodo() async {
+  @override
+  Future<void> delete() async {
     final Database db = await database;
     try {
       db.delete(
-        _tableName,
+        tableName,
         where: "createTime = ?",
         whereArgs: [createTime],
       );

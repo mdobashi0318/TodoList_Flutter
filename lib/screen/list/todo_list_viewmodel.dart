@@ -23,7 +23,7 @@ class TodoListViewModel extends ChangeNotifier {
   /// 全件取得する
   Future<void> _allFetch() async {
     message = "";
-    await TodoModel().findAllTodo().then((value) {
+    await TodoModel().allFind().then((value) {
       value.sort((a, b) {
         return a.date.compareTo(b.date);
       });
@@ -39,7 +39,7 @@ class TodoListViewModel extends ChangeNotifier {
   /// 未完了のTodoを取り出す
   Future<void> _unfinishedFetch() async {
     message = "";
-    await TodoModel().findAllTodo().then((value) {
+    await TodoModel().allFind().then((value) {
       unfinishedModel = value
           .where((element) =>
               element.completeFlag.toString() ==
@@ -59,7 +59,7 @@ class TodoListViewModel extends ChangeNotifier {
   /// 完了したTodoを取り出す
   Future<void> _completionFetch() async {
     message = "";
-    await TodoModel().findAllTodo().then((value) {
+    await TodoModel().allFind().then((value) {
       completionModel = value
           .where((element) => element.completeFlag == CompleteFlag.completion)
           .toList();
@@ -77,7 +77,7 @@ class TodoListViewModel extends ChangeNotifier {
   /// 全件削除する
   Future<void> allDelete() async {
     try {
-      await TodoModel().deleteALL();
+      await TodoModel().allDelete();
       model = [];
       message = noTodoMsg;
     } catch (e) {
