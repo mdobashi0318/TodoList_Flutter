@@ -6,7 +6,7 @@ import 'package:todolist/other/date_format.dart';
 
 import 'base_model.dart';
 
-class TodoModel implements BaseModel {
+class TodoModel implements BaseModel<TodoModel> {
   @override
   String tableName = 'todo';
 
