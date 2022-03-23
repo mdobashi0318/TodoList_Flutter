@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/model/todo_model.dart';
 
+
 class TodoDetailsScreenViewModel extends ChangeNotifier {
   TodoDetailsScreenViewModel(this.model) {
     findTodo();

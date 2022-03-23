@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todolist/model/todo_model.dart';
-import 'package:todolist/other/mode_enum.dart';
-import 'package:todolist/view/todo_details_screen.dart';
-import 'package:todolist/view/todo_list.dart';
 
-import 'package:todolist/view/todo_registration_screen.dart';
-import 'package:todolist/viewmodel/todo_list_viewmodel.dart';
+
+
+import 'model/todo_model.dart';
+import 'other/mode_enum.dart';
+import 'screen/details/todo_details_screen.dart';
+import 'screen/list/todo_list.dart';
+import 'screen/list/todo_list_viewmodel.dart';
+import 'screen/registration/todo_registration_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -60,9 +62,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 title: const Text("TodoList"),
                 bottom: const TabBar(
                   tabs: [
-                    Tab(text: '全件',),
-                    Tab(text: '未完了',),
-                    Tab(text: '完了',),
+                    Tab(
+                      text: '全件',
+                    ),
+                    Tab(
+                      text: '未完了',
+                    ),
+                    Tab(
+                      text: '完了',
+                    ),
                   ],
                 ),
                 actions: [

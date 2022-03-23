@@ -5,8 +5,12 @@ import 'package:provider/provider.dart';
 import 'package:todolist/model/todo_model.dart';
 import 'package:todolist/other/complete_enum.dart';
 import 'package:todolist/other/mode_enum.dart';
-import 'package:todolist/view/todo_registration_screen.dart';
-import 'package:todolist/viewModel/todo_details_screen_viewmodel.dart';
+import 'package:todolist/screen/registration/todo_registration_screen.dart';
+
+import 'todo_details_screen_viewmodel.dart';
+
+
+
 
 /// Todoの詳細画面
 // ignore: must_be_immutable

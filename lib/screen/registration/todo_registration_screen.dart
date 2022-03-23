@@ -4,6 +4,7 @@ import 'package:todolist/other/complete_enum.dart';
 import 'package:todolist/other/date_format.dart';
 import 'package:todolist/other/mode_enum.dart';
 
+
 class TodoRegistrationScreen extends StatefulWidget {
   final TodoModel todoModel;
   final Mode mode;
