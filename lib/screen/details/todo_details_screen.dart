@@ -9,65 +9,55 @@ import 'package:todolist/screen/registration/todo_registration_screen.dart';
 
 import 'todo_details_screen_viewmodel.dart';
 
-
-
-
 /// Todoの詳細画面
 // ignore: must_be_immutable
 class TodoDetailsScreen extends StatelessWidget {
-  TodoDetailsScreen({Key key, this.todoModel}) : super(key: key);
-  final TodoModel todoModel;
+  TodoDetailsScreen({Key key}) : super(key: key);
+
   TodoDetailsScreenViewModel viewModel;
 
   @override
   Widget build(BuildContext context) {
     viewModel = TodoDetailsScreenViewModel(
         ModalRoute.of(context).settings.arguments as TodoModel);
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("詳細"),
-        actions: [
-          _popupMenu(context),
-        ],
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(10),
-        child: ChangeNotifierProvider<TodoDetailsScreenViewModel>(
-          create: (context) => viewModel,
-          builder: (context, _) {
-            if (viewModel.msg.isNotEmpty) {
-              Future.delayed(const Duration(seconds: 1), () {
-                _errorSnackBar(context, viewModel.msg);
-              });
-            }
-            return Column(
-              children: [
-                Consumer<TodoDetailsScreenViewModel>(
-                    builder: (context, value, child) {
-                  return _valueRow('タイトル', value.model.title);
-                }),
-                Consumer<TodoDetailsScreenViewModel>(
-                    builder: (context, value, child) {
-                  return _valueRow("期日", value.model.date);
-                }),
-                Consumer<TodoDetailsScreenViewModel>(
-                    builder: (context, value, child) {
-                  return _valueRow("詳細", value.model.detail);
-                }),
-                Consumer<TodoDetailsScreenViewModel>(
-                    builder: (context, value, child) {
-                  return _valueRow(
-                      "実施状況",
-                      value.model.completeFlag == CompleteFlag.unfinished
-                          ? "未実施"
-                          : "完了");
-                })
+
+    if (viewModel.msg.isNotEmpty) {
+      Future.delayed(const Duration(seconds: 1), () {
+        viewModel.errorSnackBar(context, viewModel.msg);
+      });
+    }
+    return ChangeNotifierProvider<TodoDetailsScreenViewModel>(
+        create: (context) => viewModel,
+        builder: (context, _) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text("詳細"),
+              actions: [
+                _popupMenu(context),
               ],
-            );
-          },
-        ),
-      ),
-    );
+            ),
+            body: Consumer<TodoDetailsScreenViewModel>(
+              builder: (context, viewModel, _) {
+                return Container(
+                  padding: const EdgeInsets.all(5),
+                  child: Column(
+                    children: [
+                      _valueRow('タイトル', viewModel.model.title),
+                      _valueRow("期日", viewModel.model.date),
+                      _valueRow("詳細", viewModel.model.detail),
+                      _valueRow(
+                          "実施状況",
+                          viewModel.model.completeFlag ==
+                                  CompleteFlag.unfinished
+                              ? "未実施"
+                              : "完了"),
+                    ],
+                  ),
+                );
+              },
+            ),
+          );
+        });
   }
 
   /// 編集画面を表示する
@@ -75,8 +65,8 @@ class TodoDetailsScreen extends StatelessWidget {
     Navigator.push<void>(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            TodoRegistrationScreen(createTime: viewModel.model.createTime, mode: Mode.edit),
+        builder: (context) => TodoRegistrationScreen(
+            createTime: viewModel.model.createTime, mode: Mode.edit),
       ),
     ).then((value) {
       viewModel.findTodo();
@@ -85,14 +75,16 @@ class TodoDetailsScreen extends StatelessWidget {
 
   /// 行のタイトルと値をセットする
   Widget _valueRow(String title, String value) {
-    return ListTile(
-      title: Text(
-        title,
-        style: const TextStyle(fontSize: 13),
-      ),
-      subtitle: Text(
-        value,
-        style: const TextStyle(fontSize: 18),
+    return Card(
+      child: ListTile(
+        title: Text(
+          title,
+          style: const TextStyle(fontSize: 13),
+        ),
+        subtitle: Text(
+          value,
+          style: const TextStyle(fontSize: 18),
+        ),
       ),
     );
   }
@@ -106,7 +98,7 @@ class TodoDetailsScreen extends StatelessWidget {
             didTapEditButton(context);
             break;
           case Mode.delete:
-            _showAlert(context);
+            viewModel.deleteTodo(context);
             break;
           case Mode.add:
             break;
@@ -119,41 +111,5 @@ class TodoDetailsScreen extends StatelessWidget {
         ];
       },
     );
-  }
-
-  /// Todoの削除時のアラートを表示する
-  Future<void> _showAlert(BuildContext context) async {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Todoを削除しますか？"),
-          actions: <Widget>[
-            SimpleDialogOption(
-              child: const Text("削除"),
-              onPressed: () async {
-                await viewModel.model
-                    .delete(viewModel.model.createTime)
-                    .then((value) => Navigator.of(context).pop());
-                Navigator.of(context).pop();
-              },
-            ),
-            SimpleDialogOption(
-              child: const Text("キャンセル"),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  /// SnackBarを表示する
-  void _errorSnackBar(BuildContext context, String error) {
-    SnackBar snackBar = SnackBar(
-      content: Text(error),
-      duration: const Duration(seconds: 3),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

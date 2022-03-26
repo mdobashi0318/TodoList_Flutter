@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/model/todo_model.dart';
+import 'package:todolist/screen/widgets/error_dialog.dart';
 
-
-class TodoDetailsScreenViewModel extends ChangeNotifier {
+class TodoDetailsScreenViewModel extends ChangeNotifier with ErrorDialog {
   TodoDetailsScreenViewModel(this.model) {
     findTodo();
   }
@@ -22,6 +22,23 @@ class TodoDetailsScreenViewModel extends ChangeNotifier {
       return throw msg = error.toString();
     }).whenComplete(
       () => notifyListeners(),
+    );
+  }
+
+  /// Todoの削除時のアラートを表示する
+  Future<void> deleteTodo(BuildContext context) async {
+    showConfilmAlert(
+      context,
+      "Todoを削除しますか？",
+      '削除',
+      () async {
+        await model
+            .delete(model.createTime)
+            .then((value) => Navigator.of(context).pop());
+        Navigator.of(context).pop();
+      },
+      'キャンセル',
+      () => Navigator.of(context).pop(),
     );
   }
 }

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
-
-import 'model/todo_model.dart';
 import 'other/mode_enum.dart';
 import 'screen/details/todo_details_screen.dart';
 import 'screen/list/todo_list.dart';
@@ -26,7 +23,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       routes: <String, WidgetBuilder>{
-        '/detail': (context) => TodoDetailsScreen(todoModel: TodoModel()),
+        '/detail': (context) => TodoDetailsScreen(),
       },
       home: const MyHomePage(),
     );

@@ -29,4 +29,29 @@ mixin ErrorDialog {
       },
     );
   }
+
+
+
+  /// Todoの削除時のアラートを表示する
+  Future<void> showConfilmAlert(BuildContext context, String title, String leftBtn, Function() leftAction, String rigthBth, Function() rigthAction,) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(title),
+          actions: <Widget>[
+            SimpleDialogOption(
+              child: Text(leftBtn),
+              onPressed: leftAction,
+            ),
+            SimpleDialogOption(
+              child: Text(rigthBth),
+              onPressed: rigthAction,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }
