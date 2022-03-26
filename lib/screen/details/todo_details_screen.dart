@@ -76,7 +76,7 @@ class TodoDetailsScreen extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) =>
-            TodoRegistrationScreen(todoModel: viewModel.model, mode: Mode.Edit),
+            TodoRegistrationScreen(todoModel: viewModel.model, mode: Mode.edit),
       ),
     ).then((value) {
       viewModel.findTodo();
@@ -102,20 +102,20 @@ class TodoDetailsScreen extends StatelessWidget {
     return PopupMenuButton(
       onSelected: (dynamic mode) {
         switch (mode as Mode) {
-          case Mode.Edit:
+          case Mode.edit:
             didTapEditButton(context);
             break;
-          case Mode.Delete:
+          case Mode.delete:
             _showAlert(context);
             break;
-          case Mode.Add:
+          case Mode.add:
             break;
         }
       },
       itemBuilder: (context) {
         return <PopupMenuEntry<Mode>>[
-          const PopupMenuItem(value: Mode.Edit, child: Text("編集")),
-          const PopupMenuItem(value: Mode.Delete, child: Text("削除"))
+          const PopupMenuItem(value: Mode.edit, child: Text("編集")),
+          const PopupMenuItem(value: Mode.delete, child: Text("削除"))
         ];
       },
     );

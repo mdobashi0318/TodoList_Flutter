@@ -1,1 +1,1 @@
-enum Mode { Add, Edit, Delete }
+enum Mode { add, edit, delete }

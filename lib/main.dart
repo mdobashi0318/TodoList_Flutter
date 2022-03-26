@@ -101,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            const TodoRegistrationScreen(mode: Mode.Add),
+                            const TodoRegistrationScreen(mode: Mode.add),
                         fullscreenDialog: true),
                   ).then((dynamic value) {
                     if (value == "0") viewModel.fetchModels();

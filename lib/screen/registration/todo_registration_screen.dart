@@ -33,7 +33,7 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
 
   @override
   void initState() {
-    if (widget.mode == Mode.Edit) {
+    if (widget.mode == Mode.edit) {
       _title = widget.todoModel.title;
       _date = widget.todoModel.date;
       _detail = widget.todoModel.detail;
@@ -122,7 +122,7 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
 
   /// 完了フラグを設定するスイッチの行を作成する
   Widget _completeRow() {
-    if (widget.mode == Mode.Edit) {
+    if (widget.mode == Mode.edit) {
       return Row(
         children: [
           const Text("完了"),
@@ -144,7 +144,7 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
             _formKey.currentState.validate();
           } else {
             switch (widget.mode) {
-              case Mode.Add:
+              case Mode.add:
                 TodoModel(
                   title: _title,
                   date: _date,
@@ -157,7 +157,7 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
                     .then((_) => Navigator.of(context).pop<String>("0"))
                     .catchError((dynamic error) => _errorSnackBar(error.toString()));
                 break;
-              case Mode.Edit:
+              case Mode.edit:
                 TodoModel(
                   title: _title,
                   date: _date,
@@ -171,7 +171,7 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
                     .then((value) => Navigator.of(context).pop())
                     .catchError((dynamic error) => _errorSnackBar(error.toString()));
                 break;
-              case Mode.Delete:
+              case Mode.delete:
                 break;
             }
           }
