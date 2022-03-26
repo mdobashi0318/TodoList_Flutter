@@ -1,134 +1,119 @@
 import 'package:flutter/material.dart';
-import 'package:todolist/model/todo_model.dart';
-import 'package:todolist/other/complete_enum.dart';
+import 'package:provider/provider.dart';
 import 'package:todolist/other/date_format.dart';
 import 'package:todolist/other/mode_enum.dart';
+import 'package:todolist/screen/registration/todo_registration_viewmodel.dart';
 
-
-class TodoRegistrationScreen extends StatefulWidget {
-  final TodoModel todoModel;
+class TodoRegistrationScreen extends StatelessWidget {
+  final String createTime;
   final Mode mode;
 
-  const TodoRegistrationScreen({Key key, this.todoModel, @required this.mode})
+  TodoRegistrationScreen({Key key, this.createTime = '', @required this.mode})
       : super(key: key);
-
-  @override
-  _TodoRegistrationScreen createState() => _TodoRegistrationScreen();
-}
-
-class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
-  /// タイトル
-  String _title = "";
-
-  /// 日付
-  String _date = "";
-
-  /// 詳細
-  String _detail = "";
-
-  /// 完了フラグ
-  bool _completeFlag = false;
 
   final _formKey = GlobalKey<FormState>();
 
   @override
-  void initState() {
-    if (widget.mode == Mode.edit) {
-      _title = widget.todoModel.title;
-      _date = widget.todoModel.date;
-      _detail = widget.todoModel.detail;
-      _completeFlag =
-          widget.todoModel.completeFlag.index == CompleteFlag.unfinished.index
-              ? false
-              : true;
-    }
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("作成画面"),
-        actions: [
-          _addTodoButton(),
-        ],
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(10),
-        alignment: Alignment.centerLeft,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: TextEditingController(text: _title),
-                obscureText: false,
-                decoration: const InputDecoration(labelText: "タイトル"),
-                onChanged: _changeTitle,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'タイトルが入力されていません';
-                  }
-                  return null;
-                },
-              ),
-              Row(
-                children: [
-                  OutlinedButton(
-                    onPressed: () {
-                      _selectDate();
-                    },
-                    child: const Text("期日"),
-                  ),
-                  const SizedBox(
-                    width: 50,
-                  ),
-                  Text(_date),
-                ],
-              ),
-              TextFormField(
-                  controller: TextEditingController(text: _detail),
-                  obscureText: false,
-                  decoration: const InputDecoration(labelText: "詳細"),
-                  onChanged: _changeDetail,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '詳細が入力されていません';
-                    }
-                    return null;
-                  }),
-              _completeRow(),
-            ],
+    return ChangeNotifierProvider<TodoRegistrationViewModel>(
+      create: (context) =>
+          TodoRegistrationViewModel(mode, createTime: createTime),
+      builder: (context, _) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text("作成画面"),
           ),
-        ),
-      ),
+          body: Consumer<TodoRegistrationViewModel>(
+            builder: (context, viewModel, _) {
+              return Container(
+                padding: const EdgeInsets.all(15),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      /// タイトル
+                      TextFormField(
+                        controller:
+                            TextEditingController(text: viewModel.title),
+                        obscureText: false,
+                        decoration: const InputDecoration(labelText: "タイトル"),
+                        onChanged: viewModel.changeTitle,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'タイトルが入力されていません';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+
+                      /// 期日
+                      Row(
+                        children: [
+                          OutlinedButton(
+                            onPressed: () {
+                              _selectDate(context, viewModel);
+                            },
+                            child: const Text("期日"),
+                          ),
+                          const SizedBox(
+                            width: 50,
+                          ),
+                          Text(viewModel.date),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+
+                      /// 詳細
+                      TextFormField(
+                          controller:
+                              TextEditingController(text: viewModel.detail),
+                          obscureText: false,
+                          decoration: const InputDecoration(labelText: "詳細"),
+                          onChanged: viewModel.changeDetail,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return '詳細が入力されていません';
+                            }
+                            return null;
+                          }),
+                      const SizedBox(
+                        height: 10,
+                      ),
+
+                      /// 完了スイッチ
+                      _completeRow(context, viewModel),
+                      const SizedBox(
+                        height: 20,
+                      ),
+
+                      /// 登録ボタン
+                      _addTodoButton(context, viewModel)
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
-  void _changeTitle(String text) {
-    _title = text;
-  }
-
-  void _changeDetail(String text) {
-    _detail = text;
-  }
-
-  void _changeCompleteFlag(bool flag) {
-    setState(() {
-      _completeFlag = flag;
-    });
-  }
-
   /// 完了フラグを設定するスイッチの行を作成する
-  Widget _completeRow() {
-    if (widget.mode == Mode.edit) {
+  Widget _completeRow(
+      BuildContext context, TodoRegistrationViewModel viewModel) {
+    if (mode == Mode.edit) {
       return Row(
         children: [
           const Text("完了"),
           Switch(
-              value: _completeFlag,
-              onChanged: (flag) => _changeCompleteFlag(flag)),
+              value: viewModel.completeFlag,
+              onChanged: (flag) => viewModel.changeCompleteFlag(flag)),
         ],
       );
     }
@@ -136,70 +121,20 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
   }
 
   /// Todoの追加または、更新するボタン
-  IconButton _addTodoButton() => IconButton(
-        icon: const Icon(Icons.add),
+  ElevatedButton _addTodoButton(
+          BuildContext context, TodoRegistrationViewModel viewModel) =>
+      ElevatedButton(
         onPressed: () {
-          if (_title.isEmpty || _date.isEmpty || _detail.isEmpty) {
-            _showAlert(context);
+          if (!viewModel.didTapAddButton(context)) {
             _formKey.currentState.validate();
-          } else {
-            switch (widget.mode) {
-              case Mode.add:
-                TodoModel(
-                  title: _title,
-                  date: _date,
-                  detail: _detail,
-                  completeFlag: _completeFlag == false
-                      ? CompleteFlag.unfinished
-                      : CompleteFlag.completion,
-                )
-                    .add()
-                    .then((_) => Navigator.of(context).pop<String>("0"))
-                    .catchError((dynamic error) => _errorSnackBar(error.toString()));
-                break;
-              case Mode.edit:
-                TodoModel(
-                  title: _title,
-                  date: _date,
-                  detail: _detail,
-                  createTime: widget.todoModel.createTime,
-                  completeFlag: _completeFlag == false
-                      ? CompleteFlag.unfinished
-                      : CompleteFlag.completion,
-                )
-                    .update()
-                    .then((value) => Navigator.of(context).pop())
-                    .catchError((dynamic error) => _errorSnackBar(error.toString()));
-                break;
-              case Mode.delete:
-                break;
-            }
           }
         },
+        child: Text(mode == Mode.add ? '登録' : '更新'),
       );
 
-  /// 未入力があったときににダイアログを表示させる
-  Future<void> _showAlert(BuildContext contex) {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return SimpleDialog(
-          title: const Text("入力されていない項目があります"),
-          children: <Widget>[
-            SimpleDialogOption(
-              child: const Text("閉じる"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            )
-          ],
-        );
-      },
-    );
-  }
-
   /// 日付を設定するためのPicker
-  Future<void> _selectDate() async {
+  Future<void> _selectDate(
+      BuildContext context, TodoRegistrationViewModel viewModel) async {
     DateTime date = DateTime.now();
     final DateTime picker = await showDatePicker(
         context: context,
@@ -208,19 +143,8 @@ class _TodoRegistrationScreen extends State<TodoRegistrationScreen> {
         lastDate: DateTime.now().add(const Duration(days: 360)),
         currentDate: date);
     if (picker != null) {
-      setState(() {
-        date = picker;
-        _date = Format().setFormatString(date);
-      });
+      date = picker;
+      viewModel.changeDate(Format().setFormatString(date));
     }
-  }
-
-  /// SnackBarを表示する
-  void _errorSnackBar(String error) {
-    SnackBar snackBar = SnackBar(
-      content: Text(error),
-      duration: const Duration(seconds: 3),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

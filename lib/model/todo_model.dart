@@ -78,14 +78,14 @@ class TodoModel implements BaseModel<TodoModel> {
 
   /// Todoの更新
   @override
-  Future<void> update() async {
+  Future<void> update(String key) async {
     try {
       final Database db = await database;
       await db.update(
         tableName,
         toMap(),
         where: "createTime = ?",
-        whereArgs: [createTime],
+        whereArgs: [key],
         conflictAlgorithm: ConflictAlgorithm.fail,
       );
     } catch (e, s) {
@@ -125,14 +125,14 @@ class TodoModel implements BaseModel<TodoModel> {
 
   /// Todoの1件取得
   @override
-  Future<TodoModel> find() async {
+  Future<TodoModel> find(String key) async {
     try {
       final Database db = await database;
 
       final List<Map<String, dynamic>> maps = await db.query(
         tableName,
         where: "createTime = ?",
-        whereArgs: [createTime],
+        whereArgs: [key],
       );
       return List.generate(maps.length, (i) {
         return TodoModel(
@@ -171,13 +171,13 @@ class TodoModel implements BaseModel<TodoModel> {
 
   /// Todoを一件削除
   @override
-  Future<void> delete() async {
+  Future<void> delete(String key) async {
     final Database db = await database;
     try {
       db.delete(
         tableName,
         where: "createTime = ?",
-        whereArgs: [createTime],
+        whereArgs: [key],
       );
     } catch (e, s) {
       // ignore: avoid_print

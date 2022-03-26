@@ -14,7 +14,7 @@ class TodoDetailsScreenViewModel extends ChangeNotifier {
   Future<void> findTodo() async {
     msg = "";
     await model
-        .find()
+        .find(model.createTime)
         .then(
           (value) => model = value,
         )

@@ -76,7 +76,7 @@ class TodoDetailsScreen extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) =>
-            TodoRegistrationScreen(todoModel: viewModel.model, mode: Mode.edit),
+            TodoRegistrationScreen(createTime: viewModel.model.createTime, mode: Mode.edit),
       ),
     ).then((value) {
       viewModel.findTodo();
@@ -133,7 +133,7 @@ class TodoDetailsScreen extends StatelessWidget {
               child: const Text("削除"),
               onPressed: () async {
                 await viewModel.model
-                    .delete()
+                    .delete(viewModel.model.createTime)
                     .then((value) => Navigator.of(context).pop());
                 Navigator.of(context).pop();
               },
