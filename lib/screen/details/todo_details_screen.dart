@@ -7,18 +7,18 @@ import 'package:todolist/other/complete_enum.dart';
 import 'package:todolist/other/mode_enum.dart';
 import 'package:todolist/screen/registration/todo_registration_screen.dart';
 
-import 'todo_details_screen_viewmodel.dart';
+import 'todo_details_viewmodel.dart';
 
 /// Todoの詳細画面
 // ignore: must_be_immutable
 class TodoDetailsScreen extends StatelessWidget {
   TodoDetailsScreen({Key key}) : super(key: key);
 
-  TodoDetailsScreenViewModel viewModel;
+  TodoDetailsViewModel viewModel;
 
   @override
   Widget build(BuildContext context) {
-    viewModel = TodoDetailsScreenViewModel(
+    viewModel = TodoDetailsViewModel(
         ModalRoute.of(context).settings.arguments as TodoModel);
 
     if (viewModel.msg.isNotEmpty) {
@@ -26,7 +26,7 @@ class TodoDetailsScreen extends StatelessWidget {
         viewModel.errorSnackBar(context, viewModel.msg);
       });
     }
-    return ChangeNotifierProvider<TodoDetailsScreenViewModel>(
+    return ChangeNotifierProvider<TodoDetailsViewModel>(
         create: (context) => viewModel,
         builder: (context, _) {
           return Scaffold(
@@ -36,7 +36,7 @@ class TodoDetailsScreen extends StatelessWidget {
                 _popupMenu(context),
               ],
             ),
-            body: Consumer<TodoDetailsScreenViewModel>(
+            body: Consumer<TodoDetailsViewModel>(
               builder: (context, viewModel, _) {
                 return Container(
                   padding: const EdgeInsets.all(5),

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:todolist/model/todo_model.dart';
 import 'package:todolist/screen/widgets/error_dialog.dart';
 
-class TodoDetailsScreenViewModel extends ChangeNotifier with ErrorDialog {
-  TodoDetailsScreenViewModel(this.model) {
+class TodoDetailsViewModel extends ChangeNotifier with ErrorDialog {
+  TodoDetailsViewModel(this.model) {
     findTodo();
   }
 
