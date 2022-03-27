@@ -3,6 +3,7 @@ import 'package:sqflite/sqflite.dart';
 
 import 'package:todolist/other/complete_enum.dart';
 import 'package:todolist/other/date_format.dart';
+import 'package:todolist/preferences/first_preferences.dart';
 
 import 'base_model.dart';
 
@@ -67,6 +68,7 @@ class TodoModel implements BaseModel<TodoModel> {
         toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
+      await FirstPreferences().saveFirstCreateTodo();
     } catch (e, s) {
       // ignore: avoid_print
       print("Error: $e");

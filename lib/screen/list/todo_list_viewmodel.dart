@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/model/todo_model.dart';
 import 'package:todolist/other/complete_enum.dart';
+import 'package:todolist/preferences/first_preferences.dart';
 import 'package:todolist/screen/widgets/common_dialog.dart';
 
 class TodoListViewModel extends ChangeNotifier with CommonDialog {
@@ -8,13 +9,14 @@ class TodoListViewModel extends ChangeNotifier with CommonDialog {
   List<TodoModel> unfinishedModel = [];
   List<TodoModel> completionModel = [];
   String message;
-  final String noTodoMsg = "Todoがありません";
+  String noTodoMsg = "Todoがありません";
 
   TodoListViewModel() {
     fetchModels();
   }
 
   Future<void> fetchModels() async {
+    await FirstPreferences().getFirstCreateTodo().then((value) { noTodoMsg = value ? "Todoがありません" : '「+」ボタンから最初のTodoを作成しましょう';});
     await _allFetch();
     await _unfinishedFetch();
     await _completionFetch();
