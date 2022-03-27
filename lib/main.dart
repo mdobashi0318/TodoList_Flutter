@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todolist/screen/widgets/error_dialog.dart';
 
 import 'other/mode_enum.dart';
 import 'screen/details/todo_details_screen.dart';
@@ -38,7 +37,7 @@ class MainTabsScreen extends StatefulWidget {
   _MainTabsScreenState createState() => _MainTabsScreenState();
 }
 
-class _MainTabsScreenState extends State<MainTabsScreen> with ErrorDialog {
+class _MainTabsScreenState extends State<MainTabsScreen> {
   TodoListViewModel viewModel;
 
   @override

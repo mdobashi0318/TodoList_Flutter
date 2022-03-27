@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:todolist/model/todo_model.dart';
 import 'package:todolist/other/complete_enum.dart';
 import 'package:todolist/other/mode_enum.dart';
-import 'package:todolist/screen/widgets/error_dialog.dart';
+import 'package:todolist/screen/widgets/common_dialog.dart';
 
-class TodoRegistrationViewModel extends ChangeNotifier with ErrorDialog {
+class TodoRegistrationViewModel extends ChangeNotifier with CommonDialog {
   TodoRegistrationViewModel(this._mode, {String createTime}) {
     if (_mode == Mode.edit) {
       TodoModel()
@@ -84,7 +84,7 @@ class TodoRegistrationViewModel extends ChangeNotifier with ErrorDialog {
               (_) => Navigator.of(context).pop<Mode>(Mode.add),
             )
             .catchError(
-              (dynamic error) => errorSnackBar(
+              (dynamic error) => displaySnackBar(
                 context,
                 error.toString(),
               ),
@@ -102,7 +102,7 @@ class TodoRegistrationViewModel extends ChangeNotifier with ErrorDialog {
         )
             .update(_model.createTime)
             .then((value) => Navigator.of(context).pop())
-            .catchError((dynamic error) => errorSnackBar(
+            .catchError((dynamic error) => displaySnackBar(
                   context,
                   error.toString(),
                 ));

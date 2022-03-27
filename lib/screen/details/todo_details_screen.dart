@@ -23,7 +23,7 @@ class TodoDetailsScreen extends StatelessWidget {
 
     if (viewModel.msg.isNotEmpty) {
       Future.delayed(const Duration(seconds: 1), () {
-        viewModel.errorSnackBar(context, viewModel.msg);
+        viewModel.displaySnackBar(context, viewModel.msg);
       });
     }
     return ChangeNotifierProvider<TodoDetailsViewModel>(

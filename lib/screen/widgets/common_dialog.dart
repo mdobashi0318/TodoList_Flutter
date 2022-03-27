@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-mixin ErrorDialog {
+mixin CommonDialog {
   /// SnackBarを表示する
-  void errorSnackBar(BuildContext context, String error) {
+  void displaySnackBar(BuildContext context, String error) {
     SnackBar snackBar = SnackBar(
       content: Text(error),
       duration: const Duration(seconds: 3),
@@ -10,7 +10,7 @@ mixin ErrorDialog {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  /// 未入力があったときににダイアログを表示させる
+  /// 1つのボタンを表示するダイアログを表示する
   Future<void> showAlert(BuildContext context, String title) {
     return showDialog(
       context: context,
@@ -32,8 +32,8 @@ mixin ErrorDialog {
 
 
 
-  /// Todoの削除時のアラートを表示する
-  Future<void> showConfilmAlert(BuildContext context, String title, String leftBtn, Function() leftAction, String rigthBth, Function() rigthAction,) async {
+  /// 2つのボタンを表示するダイアログを表示する
+  Future<void> showConfirmAlert(BuildContext context, String title, String leftBtn, Function() leftAction, String rigthBth, Function() rigthAction,) async {
     return showDialog(
       context: context,
       builder: (context) {

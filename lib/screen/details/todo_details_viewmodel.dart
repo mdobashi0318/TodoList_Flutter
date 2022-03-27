@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/model/todo_model.dart';
-import 'package:todolist/screen/widgets/error_dialog.dart';
+import 'package:todolist/screen/widgets/common_dialog.dart';
 
-class TodoDetailsViewModel extends ChangeNotifier with ErrorDialog {
+class TodoDetailsViewModel extends ChangeNotifier with CommonDialog {
   TodoDetailsViewModel(this.model) {
     findTodo();
   }
@@ -27,7 +27,7 @@ class TodoDetailsViewModel extends ChangeNotifier with ErrorDialog {
 
   /// Todoの削除時のアラートを表示する
   Future<void> deleteTodo(BuildContext context) async {
-    showConfilmAlert(
+    showConfirmAlert(
       context,
       "Todoを削除しますか？",
       '削除',
