@@ -13,6 +13,9 @@ class TodoList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (model.isEmpty) {
+      return Center(child: Text(viewModel.noTodoMsg));
+    }
     return ListView.builder(
       itemCount: model.length,
       itemBuilder: (context, index) {

@@ -77,7 +77,13 @@ class TodoRegistrationViewModel extends ChangeNotifier with ErrorDialog {
           completeFlag: completeFlag == false
               ? CompleteFlag.unfinished
               : CompleteFlag.completion,
-        ).add().then((_) => Navigator.of(context).pop<String>("0")).catchError(
+        )
+            .add()
+            .then(
+              /// 前画面に戻った時に、Todoを再取得をさせるために「Mode.add」のキーワードを渡す
+              (_) => Navigator.of(context).pop<Mode>(Mode.add),
+            )
+            .catchError(
               (dynamic error) => errorSnackBar(
                 context,
                 error.toString(),

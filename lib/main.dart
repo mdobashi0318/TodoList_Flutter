@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todolist/screen/widgets/error_dialog.dart';
 
 import 'other/mode_enum.dart';
 import 'screen/details/todo_details_screen.dart';
@@ -25,19 +26,19 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         '/detail': (context) => TodoDetailsScreen(),
       },
-      home: const MyHomePage(),
+      home: const MainTabsScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key key}) : super(key: key);
+class MainTabsScreen extends StatefulWidget {
+  const MainTabsScreen({Key key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MainTabsScreenState createState() => _MainTabsScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MainTabsScreenState extends State<MainTabsScreen> with ErrorDialog {
   TodoListViewModel viewModel;
 
   @override
@@ -59,22 +60,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 title: const Text("TodoList"),
                 bottom: const TabBar(
                   tabs: [
-                    Tab(
-                      text: '全件',
-                    ),
-                    Tab(
-                      text: '未完了',
-                    ),
-                    Tab(
-                      text: '完了',
-                    ),
+                    Tab(text: '全件'),
+                    Tab(text: '未完了'),
+                    Tab(text: '完了'),
                   ],
                 ),
                 actions: [
                   IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () => _showAlert(context),
-                  ),
+                      icon: const Icon(Icons.delete),
+                      onPressed: () => viewModel.allDelete(context)),
                 ],
               ),
               body: TabBarView(children: [
@@ -83,9 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   viewModel: viewModel,
                 ),
                 TodoList(
-                  model: viewModel.unfinishedModel,
-                  viewModel: viewModel,
-                ),
+                    model: viewModel.unfinishedModel, viewModel: viewModel),
                 TodoList(
                   model: viewModel.completionModel,
                   viewModel: viewModel,
@@ -101,7 +93,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             TodoRegistrationScreen(mode: Mode.add),
                         fullscreenDialog: true),
                   ).then((dynamic value) {
-                    if (value == "0") viewModel.fetchModels();
+                    /// todoを追加して戻った場合にはTodoの再取得を行う
+                    if (value == Mode.add) viewModel.fetchModels();
                   });
                 },
               ),
@@ -110,40 +103,5 @@ class _MyHomePageState extends State<MyHomePage> {
         },
       ),
     );
-  }
-
-  Future<void> _showAlert(BuildContext contex) {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Todoを全件削除しますか？"),
-          actions: <Widget>[
-            SimpleDialogOption(
-              child: const Text("削除"),
-              onPressed: () async {
-                await viewModel
-                    .allDelete()
-                    .catchError(
-                        (dynamic error) => _errorSnackBar(error.toString()))
-                    .whenComplete(() => Navigator.pop(context));
-              },
-            ),
-            SimpleDialogOption(
-              child: const Text("キャンセル"),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _errorSnackBar(String error) {
-    SnackBar snackBar = SnackBar(
-      content: Text(error),
-      duration: const Duration(seconds: 3),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

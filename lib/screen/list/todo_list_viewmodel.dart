@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/model/todo_model.dart';
 import 'package:todolist/other/complete_enum.dart';
+import 'package:todolist/screen/widgets/error_dialog.dart';
 
-class TodoListViewModel extends ChangeNotifier {
+class TodoListViewModel extends ChangeNotifier with ErrorDialog {
   List<TodoModel> model = [];
   List<TodoModel> unfinishedModel = [];
   List<TodoModel> completionModel = [];
@@ -75,15 +76,26 @@ class TodoListViewModel extends ChangeNotifier {
   }
 
   /// 全件削除する
-  Future<void> allDelete() async {
-    try {
-      await TodoModel().allDelete();
-      model = [];
-      message = noTodoMsg;
-    } catch (e) {
-      message = e.toString();
-    } finally {
-      notifyListeners();
-    }
+  Future<void> allDelete(BuildContext context) async {
+    showConfilmAlert(
+      context,
+      "Todoを全件削除しますか？",
+      '削除',
+      () async {
+        try {
+          await TodoModel().allDelete();
+          model = [];
+          unfinishedModel = [];
+          completionModel = [];
+          message = noTodoMsg;
+          Navigator.pop(context);
+          notifyListeners();
+        } catch (e) {
+          errorSnackBar(context, e.toString());
+        }
+      },
+      "キャンセル",
+      () => Navigator.pop(context),
+    );
   }
 }
