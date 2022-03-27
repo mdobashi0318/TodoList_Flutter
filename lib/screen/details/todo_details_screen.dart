@@ -42,15 +42,10 @@ class TodoDetailsScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(5),
                   child: Column(
                     children: [
-                      _valueRow('タイトル', viewModel.model.title),
-                      _valueRow("期日", viewModel.model.date),
-                      _valueRow("詳細", viewModel.model.detail),
-                      _valueRow(
-                          "実施状況",
-                          viewModel.model.completeFlag ==
-                                  CompleteFlag.unfinished
-                              ? "未実施"
-                              : "完了"),
+                      _valueRow('タイトル', viewModel.getModel.title),
+                      _dateRow(context, viewModel.getModel.date,
+                          viewModel.getModel.completeFlag),
+                      _valueRow("詳細", viewModel.getModel.detail),
                     ],
                   ),
                 );
@@ -66,7 +61,7 @@ class TodoDetailsScreen extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) => TodoRegistrationScreen(
-            createTime: viewModel.model.createTime, mode: Mode.edit),
+            createTime: viewModel.getModel.createTime, mode: Mode.edit),
       ),
     ).then((value) {
       viewModel.findTodo();
@@ -83,8 +78,59 @@ class TodoDetailsScreen extends StatelessWidget {
         ),
         subtitle: Text(
           value,
-          style: const TextStyle(fontSize: 18),
+          style: const TextStyle(fontSize: 18, color: Colors.grey),
         ),
+      ),
+    );
+  }
+
+  /// 期限と完了状態を表示する
+  Widget _dateRow(BuildContext context, String date, CompleteFlag flag) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      padding: EdgeInsets.zero,
+      child: Row(
+        children: [
+          Expanded(
+            child: Card(
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "期日",
+                      style: TextStyle(fontSize: 13),
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          date,
+                          style:
+                              const TextStyle(fontSize: 18, color: Colors.grey),
+                        ),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        Chip(
+                          backgroundColor: viewModel.isUnfinishedFlag
+                              ? Colors.yellow
+                              : Colors.green,
+                          label: Text(
+                            viewModel.isUnfinishedFlag ? "未実施" : "完了",
+                            style: const TextStyle(
+                                fontSize: 12, color: Colors.black),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

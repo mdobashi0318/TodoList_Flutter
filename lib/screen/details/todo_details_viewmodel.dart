@@ -1,22 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/model/todo_model.dart';
+import 'package:todolist/other/complete_enum.dart';
 import 'package:todolist/screen/widgets/common_dialog.dart';
 
 class TodoDetailsViewModel extends ChangeNotifier with CommonDialog {
-  TodoDetailsViewModel(this.model) {
+  TodoDetailsViewModel(this._model) {
     findTodo();
   }
 
-  TodoModel model;
+  TodoModel _model;
+
+  TodoModel get getModel => _model;
+
+  /// 完了状態を取得する
+  bool get isUnfinishedFlag => getModel.completeFlag == CompleteFlag.unfinished;
+
   String msg;
 
   /// Todoを１件取得する
   Future<void> findTodo() async {
     msg = "";
-    await model
-        .find(model.createTime)
+    await _model
+        .find(_model.createTime)
         .then(
-          (value) => model = value,
+          (value) => _model = value,
         )
         .catchError((dynamic error) {
       return throw msg = error.toString();
@@ -32,8 +39,8 @@ class TodoDetailsViewModel extends ChangeNotifier with CommonDialog {
       "Todoを削除しますか？",
       '削除',
       () async {
-        await model
-            .delete(model.createTime)
+        await _model
+            .delete(_model.createTime)
             .then((value) => Navigator.of(context).pop());
         Navigator.of(context).pop();
       },
