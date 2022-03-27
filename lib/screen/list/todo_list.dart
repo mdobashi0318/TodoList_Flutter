@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/model/todo_model.dart';
+import 'package:todolist/other/complete_enum.dart';
 import 'package:todolist/screen/widgets/todo_list_row_widget.dart';
 
 import 'todo_list_viewmodel.dart';
@@ -20,7 +21,9 @@ class TodoList extends StatelessWidget {
       itemCount: model.length,
       itemBuilder: (context, index) {
         return TodoRow(
-          todoModel: model[index],
+          model[index].title,
+          model[index].date,
+          model[index].completeFlag == CompleteFlag.unfinished ? true : false,
           onTap: () {
             _didTapTodoRow(
               context,

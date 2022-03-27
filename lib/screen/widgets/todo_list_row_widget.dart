@@ -1,31 +1,50 @@
 import 'package:flutter/material.dart';
-import 'package:todolist/model/todo_model.dart';
-import 'package:todolist/other/complete_enum.dart';
-
 
 class TodoRow extends StatelessWidget {
-  const TodoRow({Key key, this.todoModel, this.onTap}) : super(key: key);
+  const TodoRow(this.title, this.date, this.unfinished, {this.onTap, Key key})
+      : super(key: key);
 
-  final TodoModel todoModel;
+  final String title;
+  final String date;
+  final bool unfinished;
+
   final GestureTapCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        title: Text(
-          todoModel.title,
-          style: const TextStyle(fontSize: 18),
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+          child: Container(
+        padding: const EdgeInsets.all(15),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(fontSize: 16),
+            ),
+            Row(
+              children: [
+                Text(
+                  date,
+                  style: const TextStyle(fontSize: 16),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Chip(
+                  label: Text(unfinished ? '未完了' : '完了',
+                      style:
+                          const TextStyle(fontSize: 12, color: Colors.black)),
+                  backgroundColor: unfinished ? Colors.yellow : Colors.green,
+                ),
+              ],
+            ),
+          ],
         ),
-        subtitle: Text(
-          todoModel.date,
-          style: const TextStyle(fontSize: 18),
-        ),
-        leading: todoModel.completeFlag.index == CompleteFlag.unfinished.index
-            ? const Icon(Icons.check_box_outline_blank_rounded)
-            : const Icon(Icons.check_box_rounded),
-        onTap: onTap,
-      ),
+      )),
     );
   }
 }
