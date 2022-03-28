@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -68,12 +70,12 @@ class TodoModel implements BaseModel<TodoModel> {
         toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
+      log('Todo追加: title: $title, date: $date, detail: $detail');
       await FirstPreferences().saveFirstCreateTodo();
     } catch (e, s) {
-      // ignore: avoid_print
-      print("Error: $e");
-      // ignore: avoid_print
-      print("stackTrace: $s");
+      log("Error: $e");
+
+      log("stackTrace: $s");
       return throw ("Todoの追加に失敗しました");
     }
   }
@@ -90,11 +92,11 @@ class TodoModel implements BaseModel<TodoModel> {
         whereArgs: [key],
         conflictAlgorithm: ConflictAlgorithm.fail,
       );
+      log('Todo更新: title: $title, date: $date, detail: $detail, completeFlag: $completeFlag, createTime: $createTime');
     } catch (e, s) {
-      // ignore: avoid_print
-      print("Error: $e");
-      // ignore: avoid_print
-      print("stackTrace: $s");
+      log("Error: $e");
+
+      log("stackTrace: $s");
       return throw ("Todoの更新に失敗しました");
     }
   }
@@ -117,10 +119,9 @@ class TodoModel implements BaseModel<TodoModel> {
         );
       });
     } catch (e, s) {
-      // ignore: avoid_print
-      print("error: $e");
-      // ignore: avoid_print
-      print("stackTrace: $s");
+      log("error: $e");
+
+      log("stackTrace: $s");
       return throw ("Todoの取得に失敗しました");
     }
   }
@@ -148,10 +149,9 @@ class TodoModel implements BaseModel<TodoModel> {
         );
       }).first;
     } catch (error, stackTrace) {
-      // ignore: avoid_print
-      print("stackTrace: $stackTrace");
-      // ignore: avoid_print
-      print("Todoの取得エラー: $error");
+      log("stackTrace: $stackTrace");
+
+      log("Todoの取得エラー: $error");
       return throw ("Todoの取得に失敗しました");
     }
   }
@@ -163,10 +163,9 @@ class TodoModel implements BaseModel<TodoModel> {
       final Database db = await database;
       db.delete(tableName);
     } catch (error, stackTrace) {
-      // ignore: avoid_print
-      print("stackTrace: $stackTrace");
-      // ignore: avoid_print
-      print("Todoの全件削除エラー: $error");
+      log("stackTrace: $stackTrace");
+
+      log("Todoの全件削除エラー: $error");
       return throw ("Todoの削除に失敗しました");
     }
   }
@@ -181,11 +180,11 @@ class TodoModel implements BaseModel<TodoModel> {
         where: "createTime = ?",
         whereArgs: [key],
       );
+      log('Todo削除: title: $title, date: $date, detail: $detail, completeFlag: $completeFlag, createTime: $createTime');
     } catch (e, s) {
-      // ignore: avoid_print
-      print("Todoの削除エラー: $e");
-      // ignore: avoid_print
-      print("stackTrace: $s");
+      log("Todoの削除エラー: $e");
+
+      log("stackTrace: $s");
       return throw ("Todoの削除に失敗しました");
     }
   }
