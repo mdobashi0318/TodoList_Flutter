@@ -1,12 +1,20 @@
+import 'dart:developer';
+
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite/sqlite_api.dart';
+
 import 'package:todolist/other/complete_enum.dart';
 import 'package:todolist/other/date_format.dart';
+import 'package:todolist/preferences/first_preferences.dart';
 
+import 'base_model.dart';
 
-class TodoModel {
-  final String _tableName = "todo";
+class TodoModel implements BaseModel<TodoModel> {
+  @override
+  String tableName = 'todo';
+
+  @override
+  Future<Database> database;
 
   /// タイトル
   String title;
@@ -29,17 +37,17 @@ class TodoModel {
     this.detail,
     this.createTime,
     this.completeFlag,
-  });
-
-  final Future<Database> database = openDatabase(
-    join('TodoModel.db'),
-    onCreate: (db, version) {
-      return db.execute(
-        "CREATE TABLE todo(createTime TEXT PRIMARY KEY, title TEXT, date TEXT, detail TEXT, completeFlag Text)",
-      );
-    },
-    version: 1,
-  );
+  }) {
+    database = openDatabase(
+      join('TodoModel.db'),
+      onCreate: (db, version) {
+        return db.execute(
+          "CREATE TABLE $tableName(createTime TEXT PRIMARY KEY, title TEXT, date TEXT, detail TEXT, completeFlag Text)",
+        );
+      },
+      version: 1,
+    );
+  }
 
   Map<String, dynamic> toMap() {
     final _createTime = createTime ?? Format().createTime;
@@ -53,48 +61,52 @@ class TodoModel {
   }
 
   /// Todoの作成
-  Future<void> addTodo() async {
+  @override
+  Future<void> add() async {
     final Database db = await database;
     try {
       await db.insert(
-        _tableName,
+        tableName,
         toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
+      log('Todo追加: title: $title, date: $date, detail: $detail');
+      await FirstPreferences().saveFirstCreateTodo();
     } catch (e, s) {
-      // ignore: avoid_print
-      print("Error: $e");
-      // ignore: avoid_print
-      print("stackTrace: $s");
+      log("Error: $e");
+
+      log("stackTrace: $s");
       return throw ("Todoの追加に失敗しました");
     }
   }
 
   /// Todoの更新
-  Future<void> updateTodo() async {
+  @override
+  Future<void> update(String key) async {
     try {
       final Database db = await database;
       await db.update(
-        _tableName,
+        tableName,
         toMap(),
         where: "createTime = ?",
-        whereArgs: [createTime],
+        whereArgs: [key],
         conflictAlgorithm: ConflictAlgorithm.fail,
       );
+      log('Todo更新: title: $title, date: $date, detail: $detail, completeFlag: $completeFlag, createTime: $createTime');
     } catch (e, s) {
-      // ignore: avoid_print
-      print("Error: $e");
-      // ignore: avoid_print
-      print("stackTrace: $s");
+      log("Error: $e");
+
+      log("stackTrace: $s");
       return throw ("Todoの更新に失敗しました");
     }
   }
 
   /// Todoの全件取得
-  Future<List<TodoModel>> findAllTodo() async {
+  @override
+  Future<List<TodoModel>> allFind() async {
     final Database db = await database;
     try {
-      final List<Map<String, dynamic>> maps = await db.query(_tableName);
+      final List<Map<String, dynamic>> maps = await db.query(tableName);
       return List.generate(maps.length, (i) {
         return TodoModel(
           title: maps[i]['title'] as String,
@@ -107,23 +119,23 @@ class TodoModel {
         );
       });
     } catch (e, s) {
-      // ignore: avoid_print
-      print("error: $e");
-      // ignore: avoid_print
-      print("stackTrace: $s");
+      log("error: $e");
+
+      log("stackTrace: $s");
       return throw ("Todoの取得に失敗しました");
     }
   }
 
   /// Todoの1件取得
-  Future<TodoModel> findTodo() async {
+  @override
+  Future<TodoModel> find(String key) async {
     try {
       final Database db = await database;
 
       final List<Map<String, dynamic>> maps = await db.query(
-        _tableName,
+        tableName,
         where: "createTime = ?",
-        whereArgs: [createTime],
+        whereArgs: [key],
       );
       return List.generate(maps.length, (i) {
         return TodoModel(
@@ -137,42 +149,42 @@ class TodoModel {
         );
       }).first;
     } catch (error, stackTrace) {
-      // ignore: avoid_print
-      print("stackTrace: $stackTrace");
-      // ignore: avoid_print
-      print("Todoの取得エラー: $error");
+      log("stackTrace: $stackTrace");
+
+      log("Todoの取得エラー: $error");
       return throw ("Todoの取得に失敗しました");
     }
   }
 
   /// Todoの全件削除
-  Future<void> deleteALL() async {
+  @override
+  Future<void> allDelete() async {
     try {
       final Database db = await database;
-      db.delete(_tableName);
+      db.delete(tableName);
     } catch (error, stackTrace) {
-      // ignore: avoid_print
-      print("stackTrace: $stackTrace");
-      // ignore: avoid_print
-      print("Todoの全件削除エラー: $error");
+      log("stackTrace: $stackTrace");
+
+      log("Todoの全件削除エラー: $error");
       return throw ("Todoの削除に失敗しました");
     }
   }
 
   /// Todoを一件削除
-  Future<void> deleteTodo() async {
+  @override
+  Future<void> delete(String key) async {
     final Database db = await database;
     try {
       db.delete(
-        _tableName,
+        tableName,
         where: "createTime = ?",
-        whereArgs: [createTime],
+        whereArgs: [key],
       );
+      log('Todo削除: title: $title, date: $date, detail: $detail, completeFlag: $completeFlag, createTime: $createTime');
     } catch (e, s) {
-      // ignore: avoid_print
-      print("Todoの削除エラー: $e");
-      // ignore: avoid_print
-      print("stackTrace: $s");
+      log("Todoの削除エラー: $e");
+
+      log("stackTrace: $s");
       return throw ("Todoの削除に失敗しました");
     }
   }
